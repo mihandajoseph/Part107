@@ -1312,6 +1312,54 @@ const DATA = {
         ],
         correct: 1,
         exp: "If Class B extends to the surface at that location, you are in Class B regardless of altitude. Authorization required."
+      },
+      {
+        q: "(Refer to the sectional excerpt.) What type of special use airspace is 'Devil's Lake West MOA' shown east of area 2?",
+        opts: [
+          "Class D airspace",
+          "Restricted area",
+          "Military Operations Area",
+          "Prohibited area"
+        ],
+        correct: 2,
+        fig: "fig-21.jpg",
+        exp: "MOAs are shown with solid magenta boundaries with 'MOA' labeled inside. Drones may operate but should exercise extreme caution when active."
+      },
+      {
+        q: "(Refer to the sectional excerpt.) Jamestown Regional (JMS) is shown as a blue-colored airport symbol. To operate a small UA in the airspace directly around JMS, you must:",
+        opts: [
+          "File a flight plan",
+          "Receive ATC authorization (typically via LAANC)",
+          "Do nothing extra beyond Part 107",
+          "Notify the National Park Service"
+        ],
+        correct: 1,
+        fig: "fig-26.jpg",
+        exp: "Blue airport symbol = controlled airspace (has tower). Part 107 requires ATC authorization for operations in controlled airspace (B, C, D, surface E)."
+      },
+      {
+        q: "(Refer to the sectional excerpt.) The unmarked balloon caution box notes an altitude of 3,008 feet. Altitudes on chart obstacle callouts like this are typically expressed in:",
+        opts: [
+          "AGL",
+          "MSL",
+          "Flight Level",
+          "Meters"
+        ],
+        correct: 1,
+        fig: "fig-20.jpg",
+        exp: "Obstacle altitudes on sectionals are in MSL (bold number). Height above ground (AGL) is shown separately in parentheses if included."
+      },
+      {
+        q: "(Refer to the sectional excerpt.) The gray lines labeled 'VR1667, VR1617, VR1638, VR1668' indicate Military Training Routes with four-digit numbers. This means the route is:",
+        opts: [
+          "Above 1,500 ft AGL only",
+          "At or below 1,500 ft AGL throughout",
+          "IFR only",
+          "Inactive"
+        ],
+        correct: 1,
+        fig: "fig-59.jpg",
+        exp: "Four-digit MTR numbers = entirely at or below 1,500 ft AGL. Three-digit numbers indicate segments above 1,500 ft AGL. Military aircraft may transit at 250+ knots."
       }
     ],
     topics: [
@@ -1732,6 +1780,54 @@ const DATA = {
         ],
         correct: 1,
         exp: "Squall lines are lines of severe thunderstorms, often ahead of cold fronts. They produce the most severe non-tornadic weather in aviation."
+      },
+      {
+        q: "(Refer to the METAR chart.) What is the visibility reported at KLAX?",
+        opts: [
+          "6 statute miles",
+          "6 nautical miles",
+          "60 statute miles",
+          "16 statute miles"
+        ],
+        correct: 0,
+        fig: "fig-12.jpg",
+        exp: "KLAX shows '6SM' = 6 statute miles visibility, along with mist (BR). Visibility in METARs is always in statute miles."
+      },
+      {
+        q: "(Refer to the METAR chart.) The wind reported at KBOI is:",
+        opts: [
+          "130° true at 4 knots",
+          "130° magnetic at 4 knots",
+          "13° at 40 knots",
+          "1,300 ft at 4 kts"
+        ],
+        correct: 0,
+        fig: "fig-12.jpg",
+        exp: "KBOI wind is '13004KT' = 130° true at 4 knots. METAR wind is always in degrees TRUE (magnetic wind is used on ATIS/tower)."
+      },
+      {
+        q: "(Refer to the METAR chart.) The altimeter setting at KINK is:",
+        opts: [
+          "30.00 inHg",
+          "3,000 feet",
+          "30 knots",
+          "3.00 inHg"
+        ],
+        correct: 0,
+        fig: "fig-12.jpg",
+        exp: "KINK shows 'A3000' = altimeter setting 30.00 inHg. The 'A' prefix indicates altimeter setting in inches of mercury (with an implied decimal point)."
+      },
+      {
+        q: "(Refer to the METAR chart.) At KLAX the temperature/dewpoint is '16/15'. This small spread indicates:",
+        opts: [
+          "Risk of thunderstorms",
+          "Air is near saturation - fog, mist, or low ceilings likely",
+          "Clear weather ahead",
+          "Cold front just passed"
+        ],
+        correct: 1,
+        fig: "fig-12.jpg",
+        exp: "A small temperature/dewpoint spread means the air is close to saturation. Fog, mist (BR in the METAR), or low clouds are likely. KLAX also shows SCT007 (scattered at 700 ft) confirming low moisture."
       }
     ],
     topics: [
@@ -3241,6 +3337,54 @@ const DATA = {
         ],
         correct: 1,
         exp: "Class C outer shelf typically runs from 1,200 to 4,000 AGL. Flying at 2,000 AGL is inside it. Authorization required. (Of course, Part 107 caps you at 400 AGL anyway.)"
+      },
+      {
+        q: "(Refer to the sectional excerpt.) The Coeur d'Alene Airport (COE) symbol on this chart is:",
+        opts: [
+          "Blue, indicating a controlled tower",
+          "Magenta, indicating no operational control tower",
+          "Yellow, indicating a private field",
+          "Green, indicating a seaplane base"
+        ],
+        correct: 1,
+        fig: "fig-22.jpg",
+        exp: "Coeur d'Alene appears as a magenta airport symbol, indicating no operating control tower. Blue = towered."
+      },
+      {
+        q: "(Refer to the sectional excerpt.) The Class C airspace around Savannah is depicted with altitude notation '41/13' at the shelf. This means:",
+        opts: [
+          "Floor 4,100 ft, ceiling 1,300 ft AGL",
+          "Ceiling 4,100 ft MSL, floor 1,300 ft MSL",
+          "Ceiling 41,000 ft, floor 13,000 ft",
+          "Radio frequency 41.13"
+        ],
+        correct: 1,
+        fig: "fig-23.jpg",
+        exp: "Class B/C notation: top number = ceiling, bottom number = floor. Both in hundreds of feet MSL. '41/13' = 4,100 MSL to 1,300 MSL."
+      },
+      {
+        q: "(Refer to the sectional excerpt.) When measuring position on this chart, latitude lines run:",
+        opts: [
+          "North-south, measuring position east-west of Greenwich",
+          "East-west, measuring position north-south of the equator",
+          "Diagonally across the chart",
+          "Only at 30-degree intervals"
+        ],
+        correct: 1,
+        fig: "fig-26.jpg",
+        exp: "Latitude lines (parallels) run east-west and measure north-south position from the equator. Longitude lines (meridians) run north-south."
+      },
+      {
+        q: "(Refer to the sectional excerpt.) An obstacle shown with a bold number like '2049' followed by a smaller number '(1149)' in parentheses represents:",
+        opts: [
+          "2,049 ft MSL top, 1,149 ft AGL height",
+          "2,049 ft AGL top, 1,149 ft MSL",
+          "Coordinates for the obstacle",
+          "Radio frequencies"
+        ],
+        correct: 0,
+        fig: "fig-20.jpg",
+        exp: "Bold top number = height above mean sea level. Parenthetical smaller number = height above ground level. Bold formatting indicates obstacles above 1,000 ft AGL."
       }
     ],
     topics: [
