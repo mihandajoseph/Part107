@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Part 107">
+<meta name="theme-color" content="#0f1419">
+<title>Part 107 Study App</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f1419;
+    color: #e6e6e6;
+    line-height: 1.5;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    -webkit-text-size-adjust: 100%;
+  }
+  .app {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: calc(20px + env(safe-area-inset-top));
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    padding-left: calc(20px + env(safe-area-inset-left));
+    padding-right: calc(20px + env(safe-area-inset-right));
+  }
+  header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  header h1 {
+    font-size: 1.8rem;
+    color: #4fc3f7;
+    margin-bottom: 4px;
+  }
+  header p {
+    color: #888;
+    font-size: 0.9rem;
+  }
+  .topic-bar {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    background: #1a2027;
+    padding: 8px;
+    border-radius: 10px;
+  }
+  .topic-bar button {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 12px;
+    background: transparent;
+    color: #aaa;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .topic-bar button:hover { background: #222a33; color: #fff; }
+  .topic-bar button.active { background: #4fc3f7; color: #0f1419; }
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #2a3540;
+  }
+  .tab-bar button {
+    flex: 1;
+    padding: 12px 8px;
+    background: transparent;
+    color: #888;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab-bar button:hover { color: #fff; }
+  .tab-bar button.active {
+    color: #4fc3f7;
+    border-bottom-color: #4fc3f7;
+  }
+  .content { min-height: 400px; }
+  .card {
+    background: #1a2027;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .flashcard {
+    background: #1a2027;
+    border-radius: 10px;
+    padding: 32px;
+    margin-bottom: 16px;
+    min-height: 220px;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .flashcard:hover { background: #1f2731; }
+  .flashcard .label {
+    font-size: 0.75rem;
+    color: #4fc3f7;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .flashcard .term {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .flashcard .definition {
+    font-size: 1rem;
+    color: #ccc;
+  }
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+  }
+  .nav-row button {
+    padding: 8px 16px;
+    background: #2a3540;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .nav-row button:hover:not(:disabled) { background: #3a4550; }
+  .nav-row button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .counter {
+    color: #888;
+    font-size: 0.85rem;
+  }
+  .question {
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option {
+    padding: 12px 16px;
+    background: #232c36;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: #e6e6e6;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.95rem;
+  }
+  .option:hover:not(:disabled) { background: #2a3540; }
+  .option.correct {
+    background: #1e3a2a;
+    border-color: #4caf50;
+  }
+  .option.incorrect {
+    background: #3a1e1e;
+    border-color: #f44336;
+  }
+  .option:disabled { cursor: not-allowed; }
+  .explanation {
+    margin-top: 16px;
+    padding: 14px;
+    background: #232c36;
+    border-radius: 8px;
+    border-left: 3px solid #4fc3f7;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+  .pill-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .pill {
+    padding: 6px 14px;
+    background: #232c36;
+    border: 1px solid #2a3540;
+    border-radius: 16px;
+    color: #ccc;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .pill:hover { background: #2a3540; }
+  .pill.active { background: #4fc3f7; color: #0f1419; border-color: #4fc3f7; }
+  .breakdown h3 {
+    color: #4fc3f7;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+  }
+  .breakdown p { margin-bottom: 10px; color: #ddd; }
+  .breakdown ul { margin: 8px 0 12px 20px; }
+  .breakdown li { margin-bottom: 4px; color: #ccc; }
+  .breakdown strong { color: #fff; }
+  .reference {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .ref-item {
+    background: #232c36;
+    padding: 14px;
+    border-radius: 8px;
+    border-left: 3px solid #4fc3f7;
+  }
+  .ref-item h4 {
+    color: #4fc3f7;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  .ref-item p { font-size: 0.9rem; color: #ccc; }
+  .stats {
+    background: #1a2027;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-around;
+    font-size: 0.85rem;
+  }
+  .stat { text-align: center; }
+  .stat-val { color: #4fc3f7; font-weight: 600; font-size: 1.1rem; }
+  .stat-label { color: #888; }
+  @media (max-width: 600px) {
+    .app {
+      padding: 12px;
+      padding-top: calc(12px + env(safe-area-inset-top));
+      padding-bottom: calc(12px + env(safe-area-inset-bottom));
+      padding-left: calc(12px + env(safe-area-inset-left));
+      padding-right: calc(12px + env(safe-area-inset-right));
+    }
+    header h1 { font-size: 1.4rem; }
+    .topic-bar button { font-size: 0.8rem; padding: 8px; min-width: 100px; }
+    .flashcard { padding: 24px 16px; }
+    .flashcard .term { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Part 107 Study App</h1>
+    <p>Remote Pilot Certification Prep</p>
+  </header>
+
+  <div class="topic-bar" id="topicBar"></div>
+  <div class="tab-bar" id="tabBar"></div>
+  <div class="content" id="content"></div>
+</div>
+
+<script>
+// ============================================================
+// PART 107 STUDY DATA
+// ============================================================
+
+const DATA = {
+  regulations: {
+    name: "Regulations",
+    flashcards: [
+      { term: "sUAS", def: "Small Unmanned Aircraft System. Aircraft and its associated elements operated without a pilot onboard, weighing less than 55 lbs at takeoff." },
+      { term: "Part 107 Eligibility", def: "Must be at least 16 years old, able to read/speak/write/understand English, in physical and mental condition to safely operate." },
+      { term: "Initial Knowledge Test", def: "60 multiple-choice questions, 2 hours, 70 percent passing score, taken at an FAA-approved testing center." },
+      { term: "Recurrent Training", def: "Free online training course required every 24 calendar months to keep certificate current. Replaced the recurrent test in April 2021." },
+      { term: "Aircraft Registration", def: "Required for any sUAS over 0.55 lbs. Costs $5, valid for 3 years. Registration number must be displayed on the aircraft." },
+      { term: "Max Altitude", def: "400 ft AGL, unless within a 400 ft radius of a structure, then you may fly up to 400 ft above the structure's uppermost limit." },
+      { term: "Max Groundspeed", def: "87 knots (100 mph) maximum." },
+      { term: "Minimum Visibility", def: "3 statute miles from the control station." },
+      { term: "Cloud Clearance", def: "500 feet below clouds and 2,000 feet horizontal from clouds." },
+      { term: "VLOS", def: "Visual Line of Sight. The remote pilot in command (RPIC) or visual observer must maintain unaided sight of the aircraft at all times (corrective lenses OK)." },
+      { term: "Night Operations", def: "Permitted under Part 107 if the remote pilot has completed updated initial knowledge test or recurrent training AND the aircraft has anti-collision lighting visible for 3 statute miles." },
+      { term: "Accident Reporting", def: "Report to FAA within 10 calendar days if: serious injury or loss of consciousness, OR property damage (other than the sUAS) of $500+ or fair market value of $500+ to repair." },
+      { term: "Remote ID", def: "Required as of September 16, 2023. Aircraft must broadcast identification and location info, either built-in (Standard RID), via a broadcast module, or operated at an FRIA (FAA-Recognized Identification Area)." },
+      { term: "Waivers", def: "Many Part 107 rules can be waived if the pilot demonstrates the operation can be conducted safely. Waiver applications submitted via the FAA Aviation Safety Hub (AVS Hub) as of 2026. Airspace authorizations still go through LAANC or DroneZone." },
+      { term: "Operations Over People", def: "Four categories based on aircraft weight and injury risk. Category 1 (under 0.55 lbs, no exposed rotating parts), Cat 2-3 (injury thresholds), Cat 4 (airworthiness cert)." },
+      { term: "Careless or Reckless", def: "No person may operate an sUAS in a careless or reckless manner so as to endanger the life or property of another." }
+    ],
+    questions: [
+      {
+        q: "What is the maximum allowable altitude for sUAS operations under Part 107?",
+        opts: [
+          "400 ft AGL at all times",
+          "400 ft AGL, or up to 400 ft above a structure within a 400 ft radius of it",
+          "500 ft AGL",
+          "1,000 ft MSL"
+        ],
+        correct: 1,
+        exp: "Part 107 allows 400 ft AGL, but you may exceed this within a 400 ft radius of a structure as long as you stay within 400 ft of the structure's uppermost limit."
+      },
+      {
+        q: "How often must a remote pilot complete recurrent training?",
+        opts: [
+          "Every 12 calendar months",
+          "Every 24 calendar months",
+          "Every 36 calendar months",
+          "Only once after initial certification"
+        ],
+        correct: 1,
+        exp: "Recurrent training must be completed every 24 calendar months. Since April 2021 this is a free online course through the FAA, not a retest."
+      },
+      {
+        q: "What is the minimum visibility requirement under Part 107?",
+        opts: [
+          "1 statute mile",
+          "3 statute miles",
+          "5 statute miles",
+          "No minimum"
+        ],
+        correct: 1,
+        exp: "Minimum flight visibility from the control station is 3 statute miles."
+      },
+      {
+        q: "Under Part 107, an accident must be reported to the FAA within how many days?",
+        opts: ["3 calendar days", "5 calendar days", "10 calendar days", "30 calendar days"],
+        correct: 2,
+        exp: "Accidents involving serious injury or property damage of $500+ (excluding the sUAS itself) must be reported within 10 calendar days."
+      },
+      {
+        q: "What is the minimum age to obtain a Remote Pilot Certificate?",
+        opts: ["14", "16", "17", "18"],
+        correct: 1,
+        exp: "Applicants must be at least 16 years old to obtain a Remote Pilot Certificate under Part 107."
+      },
+      {
+        q: "What cloud clearance must be maintained under Part 107?",
+        opts: [
+          "500 ft below, 1,000 ft horizontal",
+          "500 ft below, 2,000 ft horizontal",
+          "1,000 ft below, 1,000 ft horizontal",
+          "Clear of clouds"
+        ],
+        correct: 1,
+        exp: "Part 107 requires 500 feet below clouds and 2,000 feet horizontal distance from clouds."
+      },
+      {
+        q: "Night operations under Part 107 require:",
+        opts: [
+          "A waiver from the FAA",
+          "Anti-collision lighting visible for 3 statute miles and updated training",
+          "Anti-collision lighting visible for 1 statute mile",
+          "Are not permitted under any circumstances"
+        ],
+        correct: 1,
+        exp: "Since April 2021, night operations are permitted if the pilot has completed updated training (initial or recurrent) and the aircraft has anti-collision lighting visible for at least 3 statute miles."
+      },
+      {
+        q: "Remote ID broadcast is required as of:",
+        opts: [
+          "September 16, 2022",
+          "September 16, 2023",
+          "December 16, 2023",
+          "It is not yet required"
+        ],
+        correct: 1,
+        exp: "Remote ID requirements took effect on September 16, 2023 for most operations."
+      },
+      {
+        q: "What is the maximum takeoff weight of an aircraft operated under Part 107?",
+        opts: ["25 lbs", "55 lbs", "100 lbs", "There is no maximum"],
+        correct: 1,
+        exp: "Part 107 applies to small unmanned aircraft systems weighing less than 55 pounds at takeoff, including everything onboard."
+      },
+      {
+        q: "Operating an sUAS from a moving vehicle is:",
+        opts: [
+          "Always prohibited",
+          "Allowed only over sparsely populated areas, not transporting property for compensation",
+          "Allowed anywhere with a waiver",
+          "Allowed in any uncontrolled airspace"
+        ],
+        correct: 1,
+        exp: "Operating from a moving vehicle is allowed only over sparsely populated areas and not while transporting property for compensation or hire."
+      },
+      {
+        q: "Who is directly responsible for the operation of the sUAS?",
+        opts: [
+          "The visual observer",
+          "The person manipulating the controls",
+          "The Remote Pilot in Command (RPIC)",
+          "The FAA"
+        ],
+        correct: 2,
+        exp: "The Remote Pilot in Command is directly responsible for and is the final authority of the operation. They can delegate flight controls but retain responsibility."
+      },
+      {
+        q: "A Part 107 remote pilot wants to fly at 500 ft AGL to inspect a 450 ft tower. Is this allowed?",
+        opts: [
+          "No, never exceed 400 ft AGL",
+          "Yes, up to 850 ft (400 ft above the tower) as long as within 400 ft radius of the tower",
+          "Only with an FAA waiver",
+          "Yes, but only with prior ATC permission"
+        ],
+        correct: 1,
+        exp: "You may fly up to 400 ft above a structure's uppermost limit as long as you remain within a 400 ft radius of it. 450 + 400 = 850 ft AGL max."
+      }
+    ],
+    topics: [
+      {
+        name: "Overview",
+        content: `<h3>What Part 107 Covers</h3>
+          <p>Part 107 is the FAA regulation that governs commercial and non-recreational operation of small unmanned aircraft systems (sUAS) in the United States. It applies to drones weighing less than 55 lbs at takeoff.</p>
+          <p><strong>Who needs it:</strong> Anyone flying a drone for work, business, or any non-recreational purpose. Recreational flyers fall under different rules (the recreational exception under 49 USC 44809) and must pass the TRUST test instead.</p>
+          <p><strong>The certificate:</strong> Called a Remote Pilot Certificate with sUAS rating. Valid as long as you keep up with recurrent training every 24 calendar months.</p>`
+      },
+      {
+        name: "Pilot Certification",
+        content: `<h3>Becoming a Remote Pilot</h3>
+          <p><strong>Eligibility:</strong></p>
+          <ul>
+            <li>At least 16 years old</li>
+            <li>Able to read, speak, write, and understand English</li>
+            <li>In physical and mental condition to safely operate an sUAS</li>
+            <li>Pass the Unmanned Aircraft General (UAG) knowledge test</li>
+          </ul>
+          <p><strong>The test:</strong> 60 multiple choice questions, 2-hour time limit, 70 percent to pass. Administered at FAA-approved Knowledge Testing Centers. Cost is around $175.</p>
+          <p><strong>After passing:</strong> Apply via IACRA for your certificate. TSA security background check is conducted. Temporary certificate issued, permanent arrives by mail.</p>
+          <p><strong>Recurrent training:</strong> Free online course through faasafety.gov every 24 calendar months. No fee, no in-person test.</p>`
+      },
+      {
+        name: "Aircraft Requirements",
+        content: `<h3>Aircraft Rules</h3>
+          <p><strong>Weight:</strong> Less than 55 lbs total at takeoff, including everything onboard (camera, payload, batteries).</p>
+          <p><strong>Registration:</strong> All sUAS over 0.55 lbs must be registered with the FAA. $5 fee, valid 3 years. The registration number must be displayed on the aircraft (legible without tools).</p>
+          <p><strong>Condition:</strong> The remote pilot is responsible for ensuring the aircraft is in a condition for safe operation. Preflight inspection required before every flight.</p>
+          <p><strong>Remote ID:</strong> Required as of September 16, 2023. Three compliance paths:</p>
+          <ul>
+            <li><strong>Standard Remote ID:</strong> Built into the aircraft, broadcasts ID, location, altitude, takeoff location</li>
+            <li><strong>Broadcast Module:</strong> Add-on device that broadcasts ID and location</li>
+            <li><strong>FRIA:</strong> Fly only at an FAA-Recognized Identification Area</li>
+          </ul>`
+      },
+      {
+        name: "Operating Rules",
+        content: `<h3>Where, When, How High</h3>
+          <p><strong>Altitude:</strong> 400 ft AGL maximum, unless within 400 ft radius of a structure, then 400 ft above the structure's uppermost limit.</p>
+          <p><strong>Speed:</strong> 87 knots (100 mph) maximum groundspeed.</p>
+          <p><strong>Visibility:</strong> 3 statute miles minimum from control station. 500 ft below clouds and 2,000 ft horizontal from clouds.</p>
+          <p><strong>Visual line of sight:</strong> Must be maintained at all times by the RPIC, person manipulating controls, or a visual observer. Corrective lenses allowed; binoculars not (except brief use).</p>
+          <p><strong>Time of day:</strong> Daylight, civil twilight, or night with anti-collision lighting visible 3 SM and pilot trained on night ops.</p>
+          <p><strong>Prohibited operations:</strong></p>
+          <ul>
+            <li>Careless or reckless operation</li>
+            <li>Carrying hazardous materials</li>
+            <li>Operating more than one aircraft at a time (no swarms without waiver)</li>
+            <li>Operating from a moving vehicle except over sparsely populated areas</li>
+          </ul>`
+      },
+      {
+        name: "Waivers & Authorizations",
+        content: `<h3>Going Beyond the Rules</h3>
+          <p><strong>Waivable rules</strong> (waiver applications now submitted via the FAA Aviation Safety Hub, not DroneZone):</p>
+          <ul>
+            <li>Operation from a moving vehicle</li>
+            <li>Daylight operation (mostly obsolete now that night is allowed)</li>
+            <li>Visual line of sight</li>
+            <li>Visual observer requirements</li>
+            <li>Operation of multiple aircraft</li>
+            <li>Yielding right of way</li>
+            <li>Operation over people (specific categories)</li>
+            <li>Operation in certain airspace</li>
+            <li>Operating limitations (altitude, speed, visibility)</li>
+          </ul>
+          <p><strong>Not waivable:</strong> The 55 lb weight limit, registration, transport of hazmat, careless/reckless rule.</p>
+          <p><strong>Airspace authorization:</strong> For controlled airspace (Class B, C, D, E surface), use LAANC (Low Altitude Authorization and Notification Capability) for near-real-time approval, or FAA DroneZone for non-LAANC requests.</p>`
+      },
+      {
+        name: "Remote ID",
+        content: `<h3>Drone ID Broadcast Rule</h3>
+          <p><strong>What it does:</strong> Aircraft broadcasts a signal containing identification info and location. Think of it as a digital license plate.</p>
+          <p><strong>What is broadcast:</strong></p>
+          <ul>
+            <li>A unique identifier for the drone</li>
+            <li>Drone's latitude/longitude and altitude</li>
+            <li>Drone's velocity</li>
+            <li>Control station latitude/longitude (Standard RID) or takeoff location (Broadcast Module)</li>
+            <li>Time mark</li>
+            <li>Emergency status (Standard RID only)</li>
+          </ul>
+          <p><strong>Range:</strong> Broadcasts via radio frequency (not internet) over open spectrum. Anyone with a compatible receiver/app can see the broadcast.</p>
+          <p><strong>Exceptions:</strong> Operating within visual line of sight at an FRIA (FAA-Recognized Identification Area). FRIAs are pre-approved locations.</p>`
+      }
+    ],
+    reference: [
+      { title: "Max Altitude", body: "400 ft AGL, or 400 ft above a structure within 400 ft of it" },
+      { title: "Max Speed", body: "87 knots (100 mph) groundspeed" },
+      { title: "Min Visibility", body: "3 statute miles from control station" },
+      { title: "Cloud Clearance", body: "500 ft below, 2,000 ft horizontal" },
+      { title: "Min Pilot Age", body: "16 years old" },
+      { title: "Knowledge Test", body: "60 questions, 2 hrs, 70% to pass" },
+      { title: "Recurrent Training", body: "Every 24 calendar months (free online)" },
+      { title: "Registration", body: "$5, valid 3 years, required over 0.55 lbs" },
+      { title: "Accident Reporting", body: "Within 10 calendar days if serious injury or $500+ damage" },
+      { title: "Night Ops", body: "Allowed with anti-collision lights (3 SM visible) and updated training" },
+      { title: "VLOS", body: "Must maintain unaided visual line of sight (corrective lenses OK)" },
+      { title: "Max Weight", body: "Less than 55 lbs total at takeoff" }
+    ]
+  },
+
+  airspace: {
+    name: "Airspace",
+    flashcards: [
+      { term: "Class A", def: "18,000 ft MSL up to FL600. IFR only. Drones not authorized to operate here." },
+      { term: "Class B", def: "Surface to 10,000 ft MSL typically. Surrounds the busiest airports. Shown by solid blue lines on sectional. Drones need ATC authorization (LAANC)." },
+      { term: "Class C", def: "Surface to 4,000 ft AGL typically. Around moderately busy airports with operational control tower and radar. Solid magenta lines on sectional. Drones need authorization." },
+      { term: "Class D", def: "Surface to 2,500 ft AGL typically. Around airports with an operational control tower. Dashed blue lines on sectional. Drones need authorization." },
+      { term: "Class E", def: "Controlled airspace not classified as A, B, C, or D. Surface E shown with dashed magenta. Floors at 700 AGL (fading magenta) or 1,200 AGL (fading blue)." },
+      { term: "Class G", def: "Uncontrolled airspace. Surface up to the base of overlying controlled airspace. Most rural areas. No ATC authorization needed for drones." },
+      { term: "LAANC", def: "Low Altitude Authorization and Notification Capability. Near-real-time system for drone pilots to get airspace authorization in controlled airspace." },
+      { term: "Prohibited Area (P)", def: "Flight prohibited for security or national welfare (e.g., P-56 over White House). Cannot enter." },
+      { term: "Restricted Area (R)", def: "Unusual hazards (artillery, aerial gunnery). Entry requires permission from controlling agency. Active times shown on sectional." },
+      { term: "MOA", def: "Military Operations Area. Separates military training from IFR traffic. VFR aircraft (and drones) may operate but should use extreme caution when active." },
+      { term: "Warning Area (W)", def: "Similar to restricted but over international waters. Warns of activity hazardous to nonparticipating aircraft." },
+      { term: "TFR", def: "Temporary Flight Restriction. Established by NOTAM. Common around disasters, VIP movements, sporting events." },
+      { term: "Stadium TFR", def: "3 NM radius, surface to 3,000 ft AGL, from 1 hr before to 1 hr after MLB, NFL, NCAA Division I football, and major NASCAR events." },
+      { term: "Sectional Chart", def: "1:500,000 scale aeronautical chart showing airspace, terrain, obstacles, airports. Primary tool for VFR navigation and Part 107 testing." }
+    ],
+    questions: [
+      {
+        q: "On a sectional chart, Class B airspace is depicted as:",
+        opts: ["Solid magenta lines", "Solid blue lines", "Dashed blue lines", "Dashed magenta lines"],
+        correct: 1,
+        exp: "Class B is shown by solid blue lines. Class C is solid magenta, Class D is dashed blue, surface Class E is dashed magenta."
+      },
+      {
+        q: "Which airspace class is uncontrolled?",
+        opts: ["Class B", "Class D", "Class E", "Class G"],
+        correct: 3,
+        exp: "Class G is uncontrolled airspace. It extends from the surface up to the base of overlying controlled airspace."
+      },
+      {
+        q: "To operate in Class D airspace, a Part 107 pilot must:",
+        opts: [
+          "File a flight plan",
+          "Obtain ATC authorization (often via LAANC)",
+          "Stay below 200 ft AGL",
+          "Nothing, no authorization required"
+        ],
+        correct: 1,
+        exp: "Class D is controlled airspace. Part 107 operations require prior ATC authorization, typically obtained through LAANC."
+      },
+      {
+        q: "A blue dashed line on a sectional chart indicates:",
+        opts: ["Class B", "Class C", "Class D", "Class E surface area"],
+        correct: 2,
+        exp: "Dashed blue lines depict Class D airspace, typically surrounding airports with an operational control tower."
+      },
+      {
+        q: "What does a magenta dashed line on a sectional indicate?",
+        opts: [
+          "Class B airspace",
+          "Class C airspace",
+          "Class E airspace with surface area",
+          "Restricted area"
+        ],
+        correct: 2,
+        exp: "Magenta dashed lines indicate Class E airspace that begins at the surface, typically around smaller airports without towers."
+      },
+      {
+        q: "A drone pilot wants to fly over a stadium during an NFL game. They:",
+        opts: [
+          "May fly above 1,000 ft AGL",
+          "Must stay outside 3 NM and below 3,000 ft AGL during the TFR window",
+          "Cannot fly within 3 NM, surface to 3,000 ft AGL, from 1 hr before to 1 hr after the event",
+          "May fly with stadium permission"
+        ],
+        correct: 2,
+        exp: "The standing stadium TFR prohibits drone operations within 3 NM, surface to 3,000 ft AGL, from 1 hour before to 1 hour after MLB, NFL, NCAA D1 football, and major NASCAR events."
+      },
+      {
+        q: "Where can a Part 107 pilot operate without ATC authorization?",
+        opts: ["Class B", "Class C", "Class D", "Class G"],
+        correct: 3,
+        exp: "Class G is uncontrolled airspace and requires no ATC authorization. The others all require authorization (typically via LAANC)."
+      },
+      {
+        q: "A Restricted Area on a sectional:",
+        opts: [
+          "Cannot be entered under any circumstances",
+          "May be entered with permission from the controlling agency",
+          "Is only restricted at night",
+          "Applies only to military aircraft"
+        ],
+        correct: 1,
+        exp: "Restricted areas have unusual hazards to flight. They can be entered with permission from the controlling agency. Check status via NOTAMs or call the controlling agency."
+      },
+      {
+        q: "A faded blue ring on a sectional chart indicates that Class E airspace begins at:",
+        opts: ["The surface", "700 ft AGL", "1,200 ft AGL", "14,500 ft MSL"],
+        correct: 2,
+        exp: "Faded blue indicates Class E starting at 1,200 ft AGL. Faded magenta indicates Class E starting at 700 ft AGL."
+      },
+      {
+        q: "Class C airspace typically extends:",
+        opts: [
+          "Surface to 2,500 ft AGL",
+          "Surface to 4,000 ft AGL",
+          "Surface to 10,000 ft MSL",
+          "1,200 ft AGL to 18,000 ft MSL"
+        ],
+        correct: 1,
+        exp: "Class C typically extends from the surface to 4,000 ft AGL, with an inner core of 5 NM radius and outer shelf of 10 NM."
+      }
+    ],
+    topics: [
+      {
+        name: "Overview",
+        content: `<h3>How Airspace Works</h3>
+          <p>US airspace is divided into classes (A through G) based on traffic density, type of operations, and level of ATC service. Drone pilots must know where they are and whether authorization is needed.</p>
+          <p><strong>Controlled airspace:</strong> Classes A, B, C, D, E. ATC provides separation services to participating aircraft.</p>
+          <p><strong>Uncontrolled airspace:</strong> Class G. No ATC services; pilots responsible for separation.</p>
+          <p><strong>For drones:</strong> Authorization required for B, C, D, and surface E. Class G is free to operate in (still subject to Part 107 rules).</p>`
+      },
+      {
+        name: "Class G",
+        content: `<h3>Class G (Uncontrolled)</h3>
+          <p>Class G is uncontrolled airspace from the surface up to the base of overlying controlled airspace. Most rural areas and altitudes below 700 or 1,200 ft AGL are Class G.</p>
+          <p><strong>No ATC authorization needed</strong> for drone operations in Class G, but all other Part 107 rules apply (altitude, VLOS, visibility, etc.).</p>
+          <p><strong>Caution:</strong> Class G areas near non-towered airports may have manned aircraft using a CTAF (Common Traffic Advisory Frequency). Stay clear of approach/departure paths.</p>`
+      },
+      {
+        name: "Class B/C/D",
+        content: `<h3>Controlled Airspace Around Airports</h3>
+          <p><strong>Class B (Solid blue lines):</strong> Around the busiest airports (e.g., ATL, ORD, LAX). Inverted wedding cake shape. Surface up to typically 10,000 ft MSL.</p>
+          <p><strong>Class C (Solid magenta lines):</strong> Moderately busy airports with control tower and radar. Two-tier: 5 NM core to 4,000 AGL, 10 NM shelf from 1,200 to 4,000 AGL.</p>
+          <p><strong>Class D (Dashed blue lines):</strong> Smaller airports with operational control tower. Typically 4 NM radius, surface to 2,500 ft AGL.</p>
+          <p><strong>For drones:</strong> All three require ATC authorization. LAANC provides near-real-time approval for many locations. Otherwise use FAA DroneZone.</p>`
+      },
+      {
+        name: "Class E",
+        content: `<h3>Class E (Controlled, Various Floors)</h3>
+          <p>Class E is everywhere there isn't another class (A, B, C, D, or G) and is controlled airspace. The floor varies.</p>
+          <p><strong>Surface (dashed magenta):</strong> Class E reaches the surface, usually around smaller airports without towers but with instrument approaches. <strong>Drones need authorization here.</strong></p>
+          <p><strong>700 ft AGL (faded magenta from outside in):</strong> Class E starts at 700 AGL. Below it is Class G. Drones do NOT need authorization in the Class G beneath.</p>
+          <p><strong>1,200 ft AGL (faded blue from outside in):</strong> Class E starts at 1,200 AGL. Class G below.</p>
+          <p>Since drones are limited to 400 ft AGL, you'll rarely enter Class E unless it's the surface variant. Then authorization is required.</p>`
+      },
+      {
+        name: "Special Use",
+        content: `<h3>Special Use Airspace</h3>
+          <p><strong>Prohibited Areas (P-):</strong> Flight prohibited for security/welfare (e.g., P-56 over the White House). Never enter.</p>
+          <p><strong>Restricted Areas (R-):</strong> Unusual hazards (artillery, missiles). Entry requires permission from the controlling agency. Status varies; check NOTAMs.</p>
+          <p><strong>Warning Areas (W-):</strong> Similar to restricted but over international waters (12 NM offshore). Hazards to non-participating aircraft.</p>
+          <p><strong>MOAs (Military Operations Areas):</strong> Separate military training from IFR traffic. VFR (and drones) can technically operate but use extreme caution when active.</p>
+          <p><strong>Alert Areas (A-):</strong> High volume of pilot training or unusual aerial activity. Both military and civilian aircraft must use vigilance.</p>
+          <p><strong>CFAs (Controlled Firing Areas):</strong> Not on sectionals. Activities suspended when aircraft approach.</p>
+          <p><strong>TFRs:</strong> Temporary, issued via NOTAM. Check before every flight.</p>`
+      },
+      {
+        name: "Charts",
+        content: `<h3>Reading Sectional Charts</h3>
+          <p>Sectional charts (1:500,000) are the primary VFR navigation tool and the chart used on the Part 107 test.</p>
+          <p><strong>Airspace lines (memorize):</strong></p>
+          <ul>
+            <li>Solid blue = Class B</li>
+            <li>Solid magenta = Class C</li>
+            <li>Dashed blue = Class D</li>
+            <li>Dashed magenta = Class E to surface</li>
+            <li>Faded magenta = Class E starts at 700 AGL</li>
+            <li>Faded blue = Class E starts at 1,200 AGL</li>
+          </ul>
+          <p><strong>Airport symbols:</strong> Blue = has control tower. Magenta = no tower. Star inside = beacon. R inside = right-traffic pattern.</p>
+          <p><strong>Obstacles:</strong> Towers and other obstructions shown with elevation. Lighted obstructions have flash marks. Numbers in bold = above 1,000 ft AGL.</p>
+          <p><strong>Maximum Elevation Figure (MEF):</strong> Large bold numbers in quadrants showing highest obstacle plus a buffer. Useful for terrain awareness.</p>
+          <p><strong>Latitude/Longitude:</strong> Lat lines run east-west (parallels). Long lines run north-south (meridians).</p>`
+      }
+    ],
+    reference: [
+      { title: "Class A", body: "18,000 MSL to FL600, IFR only, drones not authorized" },
+      { title: "Class B", body: "Solid blue. Surface to ~10,000 MSL. ATC auth required for drones." },
+      { title: "Class C", body: "Solid magenta. Surface to ~4,000 AGL. ATC auth required." },
+      { title: "Class D", body: "Dashed blue. Surface to ~2,500 AGL. ATC auth required." },
+      { title: "Class E (surface)", body: "Dashed magenta. Drones need authorization." },
+      { title: "Class E (700 AGL)", body: "Faded magenta. Class G below; no auth needed for drones." },
+      { title: "Class E (1,200 AGL)", body: "Faded blue. Class G below." },
+      { title: "Class G", body: "Uncontrolled. No authorization needed." },
+      { title: "LAANC", body: "Near-real-time airspace authorization via approved apps" },
+      { title: "Stadium TFR", body: "3 NM / 3,000 AGL, 1 hr before to 1 hr after MLB/NFL/NCAA D1 football/major NASCAR" },
+      { title: "Airport Symbols", body: "Blue = towered, Magenta = non-towered" }
+    ]
+  },
+
+  weather: {
+    name: "Weather",
+    flashcards: [
+      { term: "METAR", def: "Routine aviation weather report issued hourly. Provides current observed conditions at an airport." },
+      { term: "TAF", def: "Terminal Aerodrome Forecast. 24-30 hour forecast for a 5 SM radius around an airport. Issued 4 times daily." },
+      { term: "Wind in METAR", def: "Reported as direction (degrees true) and speed (knots). 27015KT means wind from 270° at 15 knots. Variable winds shown as VRB." },
+      { term: "Visibility in METAR", def: "Reported in statute miles. 10SM means 10 statute miles. Below 1 SM shown in fractions or as M1/4SM (less than 1/4)." },
+      { term: "Sky Conditions", def: "SKC (clear), FEW (1-2 oktas), SCT (3-4 oktas), BKN (5-7 oktas), OVC (8 oktas overcast). BKN and OVC define a ceiling." },
+      { term: "Ceiling", def: "Lowest broken (BKN) or overcast (OVC) layer, or vertical visibility (VV) into obscuration." },
+      { term: "Density Altitude", def: "Pressure altitude corrected for non-standard temperature. High DA = thin air = degraded aircraft performance." },
+      { term: "Standard Atmosphere", def: "15°C (59°F) and 29.92 inHg at sea level. Temperature decreases 2°C per 1,000 ft (lapse rate)." },
+      { term: "Stable Air", def: "Resists vertical motion. Produces: stratus clouds, smooth air, steady precipitation, poor visibility, fog." },
+      { term: "Unstable Air", def: "Promotes vertical motion. Produces: cumulus clouds, turbulence, showery precipitation, good visibility (except in showers)." },
+      { term: "Thunderstorm Stages", def: "Cumulus (updrafts building), Mature (most dangerous: heavy rain, lightning, hail, downdrafts), Dissipating (downdrafts only)." },
+      { term: "Wind Shear", def: "Sudden change in wind speed or direction. Most hazardous near thunderstorms, low-level temperature inversions, frontal passages, terrain." },
+      { term: "Fog Types", def: "Radiation (clear night cooling), Advection (warm moist air over cooler surface), Upslope (air pushed up terrain), Steam (cold air over warm water), Precipitation-induced." },
+      { term: "Microburst", def: "Strong localized downdraft from a thunderstorm. Spreads outward, creating dangerous wind shear. Lasts ~15 minutes, winds up to 100 knots." },
+      { term: "Inversion", def: "Temperature increases with altitude (opposite of normal). Traps pollutants, restricts visibility, creates stable smooth air." }
+    ],
+    questions: [
+      {
+        q: "In a METAR, the wind entry '24015G25KT' means:",
+        opts: [
+          "Wind from 240° true at 15 knots gusting to 25 knots",
+          "Wind from 240° magnetic at 15 mph gusting to 25 mph",
+          "Wind to 240° at 15 knots steady, 25 knot ceiling",
+          "Visibility 240, gust 15"
+        ],
+        correct: 0,
+        exp: "Wind in METARs is direction (3 digits, degrees TRUE) followed by speed in knots. 'G' indicates gusts."
+      },
+      {
+        q: "What does the entry 'BKN040' in a METAR indicate?",
+        opts: [
+          "Broken clouds at 40 ft AGL",
+          "Broken clouds at 4,000 ft AGL",
+          "Visibility 40 SM in broken clouds",
+          "Below 40°F broken layer"
+        ],
+        correct: 1,
+        exp: "Sky condition heights in METARs are in hundreds of feet AGL. BKN040 = broken layer at 4,000 ft AGL. BKN means 5-7 oktas of coverage and constitutes a ceiling."
+      },
+      {
+        q: "Density altitude is best described as:",
+        opts: [
+          "Altitude above mean sea level",
+          "Pressure altitude corrected for non-standard temperature",
+          "The altitude shown on the altimeter",
+          "Height above ground level"
+        ],
+        correct: 1,
+        exp: "Density altitude is pressure altitude corrected for temperature. High temperature, high altitude, and high humidity all increase density altitude and degrade aircraft performance."
+      },
+      {
+        q: "Which weather condition is associated with stable air?",
+        opts: [
+          "Cumulus clouds and turbulence",
+          "Stratus clouds and steady precipitation",
+          "Thunderstorms",
+          "Good visibility"
+        ],
+        correct: 1,
+        exp: "Stable air resists vertical motion, producing stratus (layered) clouds, smooth flight conditions, steady precipitation, and often poor visibility."
+      },
+      {
+        q: "What atmospheric conditions increase density altitude?",
+        opts: [
+          "Low temperature, low humidity, low altitude",
+          "High temperature, high humidity, high altitude",
+          "Low pressure, low temperature",
+          "Cold front passage"
+        ],
+        correct: 1,
+        exp: "Hot, humid, and high conditions all reduce air density and increase density altitude, degrading drone (and any aircraft) performance: less lift, less motor efficiency."
+      },
+      {
+        q: "The standard sea-level pressure is:",
+        opts: ["29.42 inHg", "29.92 inHg", "30.42 inHg", "1013.92 inHg"],
+        correct: 1,
+        exp: "Standard sea level pressure is 29.92 inHg (or 1013.2 millibars). Standard temperature is 15°C (59°F)."
+      },
+      {
+        q: "Which stage of a thunderstorm is most hazardous?",
+        opts: ["Cumulus", "Mature", "Dissipating", "Towering cumulus"],
+        correct: 1,
+        exp: "The mature stage features the most intense activity: heavy rain, lightning, hail, strong updrafts AND downdrafts, microbursts, and wind shear."
+      },
+      {
+        q: "Fog that forms when warm, moist air moves over a cooler surface is:",
+        opts: [
+          "Radiation fog",
+          "Advection fog",
+          "Upslope fog",
+          "Steam fog"
+        ],
+        correct: 1,
+        exp: "Advection fog forms when warm, moist air moves over a cooler surface (e.g., warm Gulf air moving over cool Pacific waters). Radiation fog forms on calm clear nights from cooling."
+      },
+      {
+        q: "A TAF covers what area and time period?",
+        opts: [
+          "10 SM radius, 12 hours",
+          "5 SM radius, 24-30 hours",
+          "25 NM radius, 6 hours",
+          "Statewide, 48 hours"
+        ],
+        correct: 1,
+        exp: "A Terminal Aerodrome Forecast covers a 5 statute mile radius around an airport for 24-30 hours, issued four times daily."
+      },
+      {
+        q: "Wind shear is most likely near:",
+        opts: [
+          "High pressure systems",
+          "Thunderstorms, frontal passages, and temperature inversions",
+          "Calm clear days",
+          "High altitude"
+        ],
+        correct: 1,
+        exp: "Wind shear (sudden changes in wind speed or direction) is most dangerous near thunderstorms, frontal passages, low-level temperature inversions, and around terrain."
+      },
+      {
+        q: "Which clouds indicate atmospheric instability?",
+        opts: ["Stratus", "Nimbostratus", "Cumulus", "Cirrostratus"],
+        correct: 2,
+        exp: "Cumulus and cumulonimbus clouds indicate unstable air with vertical development. Stratus-type clouds indicate stable air."
+      },
+      {
+        q: "The temperature/dewpoint spread in a METAR is small (within 5°F or 3°C). This suggests:",
+        opts: [
+          "Risk of thunderstorms",
+          "Risk of fog or low clouds",
+          "Clear weather",
+          "High winds"
+        ],
+        correct: 1,
+        exp: "When temperature and dewpoint are close, the air is near saturation. This often means fog, low ceilings, or precipitation is likely."
+      }
+    ],
+    topics: [
+      {
+        name: "Overview",
+        content: `<h3>Weather Theory</h3>
+          <p>Weather is driven by uneven heating of the Earth, the rotation of the planet, and moisture in the atmosphere. For drone pilots, the key factors are wind, visibility, ceiling, temperature, and density altitude.</p>
+          <p><strong>The atmosphere:</strong> Troposphere is where weather happens (surface to ~36,000 ft). Standard temperature lapse rate is 2°C per 1,000 ft.</p>
+          <p><strong>Standard atmosphere:</strong> 15°C and 29.92 inHg at sea level.</p>
+          <p><strong>Three causes of atmospheric circulation:</strong> Uneven heating, Coriolis force (Earth's rotation deflects wind), pressure gradients (wind flows from high to low pressure).</p>`
+      },
+      {
+        name: "METARs",
+        content: `<h3>Reading METARs</h3>
+          <p>METAR = Meteorological Aerodrome Report. Issued hourly, formatted as code. Example:</p>
+          <p style="font-family: monospace; background: #232c36; padding: 10px; border-radius: 6px;">METAR KJFK 121651Z 24015G25KT 10SM FEW040 SCT250 23/18 A2992 RMK AO2</p>
+          <p><strong>Decoded:</strong></p>
+          <ul>
+            <li><strong>KJFK</strong>: Airport ICAO identifier</li>
+            <li><strong>121651Z</strong>: Day 12, time 1651 Zulu (UTC)</li>
+            <li><strong>24015G25KT</strong>: Wind from 240° true at 15 knots, gusting 25</li>
+            <li><strong>10SM</strong>: Visibility 10 statute miles</li>
+            <li><strong>FEW040 SCT250</strong>: Few clouds at 4,000 AGL, scattered at 25,000 AGL</li>
+            <li><strong>23/18</strong>: Temperature 23°C, dewpoint 18°C</li>
+            <li><strong>A2992</strong>: Altimeter 29.92 inHg</li>
+            <li><strong>RMK AO2</strong>: Remarks; automated station with precipitation sensor</li>
+          </ul>
+          <p><strong>Weather codes:</strong> -RA (light rain), +TSRA (heavy thunderstorm rain), BR (mist), FG (fog), HZ (haze), SN (snow), GR (hail).</p>`
+      },
+      {
+        name: "TAFs",
+        content: `<h3>Reading TAFs</h3>
+          <p>TAF = Terminal Aerodrome Forecast. 24-30 hour forecast for 5 SM around an airport. Issued 4 times daily (0000Z, 0600Z, 1200Z, 1800Z).</p>
+          <p style="font-family: monospace; background: #232c36; padding: 10px; border-radius: 6px;">TAF KJFK 121720Z 1218/1324 24015KT P6SM SCT040<br>FM130200 27010KT P6SM SKC<br>TEMPO 1306/1310 4SM -RA BKN025</p>
+          <p><strong>Format:</strong></p>
+          <ul>
+            <li><strong>1218/1324</strong>: Valid from day 12 at 1800Z to day 13 at 2400Z</li>
+            <li><strong>FM (From):</strong> Permanent change starting at this time</li>
+            <li><strong>BECMG (Becoming):</strong> Gradual change over a time window</li>
+            <li><strong>TEMPO (Temporary):</strong> Temporary fluctuation, less than 1 hour</li>
+            <li><strong>PROB30/40:</strong> Probability percentage of conditions</li>
+            <li><strong>P6SM:</strong> Visibility greater than 6 SM</li>
+          </ul>`
+      },
+      {
+        name: "Hazards",
+        content: `<h3>Weather Hazards for Drones</h3>
+          <p><strong>Thunderstorms:</strong> Avoid by at least 20 NM. Hazards include lightning, hail, severe turbulence, wind shear, microbursts, heavy rain.</p>
+          <p><strong>Microbursts:</strong> Concentrated downdrafts from convective activity. Last about 15 minutes, winds up to 100 knots, dangerous wind shear.</p>
+          <p><strong>Wind shear:</strong> Sudden wind change. Near thunderstorms, frontal passages, temperature inversions, terrain. Can cause loss of control.</p>
+          <p><strong>Icing:</strong> Less common for drones at low altitude in summer, but possible in cold, moist conditions. Reduces lift and increases drag.</p>
+          <p><strong>Fog:</strong> Reduces visibility below Part 107 minimums. Form types: radiation, advection, upslope, steam, precipitation-induced.</p>
+          <p><strong>Frontal passages:</strong> Cold fronts bring abrupt weather changes (gusty winds, thunderstorms, clearing). Warm fronts bring extended periods of low ceilings and precipitation.</p>`
+      },
+      {
+        name: "Density Altitude",
+        content: `<h3>Density Altitude and Performance</h3>
+          <p>Density altitude is pressure altitude corrected for temperature. It is the altitude at which the aircraft "thinks" it is performing based on air density.</p>
+          <p><strong>Three factors that increase density altitude (and reduce performance):</strong></p>
+          <ul>
+            <li><strong>High temperature:</strong> Hot air is less dense</li>
+            <li><strong>High altitude:</strong> Less air pressure at altitude</li>
+            <li><strong>High humidity:</strong> Water vapor is lighter than dry air</li>
+          </ul>
+          <p><strong>Effects on a drone:</strong></p>
+          <ul>
+            <li>Reduced motor efficiency</li>
+            <li>Reduced lift from propellers</li>
+            <li>Longer takeoff distance</li>
+            <li>Slower climb rate</li>
+            <li>Faster battery drain</li>
+          </ul>
+          <p><strong>Pressure altitude:</strong> Altitude indicated when altimeter is set to 29.92 inHg.</p>`
+      },
+      {
+        name: "Stability",
+        content: `<h3>Atmospheric Stability</h3>
+          <p>Stability describes whether the atmosphere resists or promotes vertical motion. It largely determines what kinds of clouds, precipitation, and turbulence you'll encounter.</p>
+          <p><strong>Stable air signs:</strong></p>
+          <ul>
+            <li>Stratiform (layered) clouds</li>
+            <li>Smooth air, little turbulence</li>
+            <li>Steady, continuous precipitation</li>
+            <li>Poor visibility (smoke, haze, fog can accumulate)</li>
+            <li>Low ceilings</li>
+          </ul>
+          <p><strong>Unstable air signs:</strong></p>
+          <ul>
+            <li>Cumuliform (puffy, vertical) clouds</li>
+            <li>Turbulence, gusty winds</li>
+            <li>Showery, intermittent precipitation</li>
+            <li>Good visibility (except in showers)</li>
+            <li>Thunderstorms possible</li>
+          </ul>
+          <p><strong>What causes instability:</strong> Heating from below (sun warming the surface), cooling from above (cold air aloft), or lifting (terrain, fronts).</p>
+          <p><strong>Inversions:</strong> When temperature increases with altitude. Traps haze and pollutants, creates stable smooth air below, but can cause wind shear at the top.</p>`
+      }
+    ],
+    reference: [
+      { title: "Min Visibility", body: "3 SM from control station (Part 107)" },
+      { title: "Cloud Clearance", body: "500 ft below, 2,000 ft horizontal" },
+      { title: "Standard Atmosphere", body: "15°C, 29.92 inHg at sea level" },
+      { title: "Lapse Rate", body: "2°C per 1,000 ft (standard)" },
+      { title: "Wind Reporting", body: "METAR uses true north; ATIS/tower uses magnetic" },
+      { title: "Sky Coverage", body: "FEW: 1-2/8, SCT: 3-4/8, BKN: 5-7/8, OVC: 8/8" },
+      { title: "Ceiling", body: "Lowest BKN or OVC layer, or vertical visibility" },
+      { title: "Thunderstorm Avoidance", body: "Stay at least 20 NM away" },
+      { title: "Density Altitude", body: "High/Hot/Humid degrades performance" },
+      { title: "Stable Air", body: "Stratus, smooth, steady rain, poor visibility" },
+      { title: "Unstable Air", body: "Cumulus, turbulence, showers, good visibility" }
+    ]
+  },
+
+  loading: {
+    name: "Loading & Performance",
+    flashcards: [
+      { term: "Weight", def: "Total mass of the aircraft including frame, batteries, payload, and any attached equipment. Must stay under 55 lbs for Part 107." },
+      { term: "Center of Gravity (CG)", def: "The point where the aircraft would balance. Affects stability, control, and flight characteristics." },
+      { term: "Forward CG", def: "Nose-heavy. Aircraft is more stable but harder to maneuver. May have trouble climbing or pitching up." },
+      { term: "Aft CG", def: "Tail-heavy. Aircraft is more responsive but less stable. Can lead to loss of control, especially in pitch." },
+      { term: "Payload", def: "Anything carried beyond the basic aircraft and required batteries (e.g., camera, sensors, delivered items)." },
+      { term: "Battery Effects", def: "Cold reduces capacity. Aging reduces capacity. High discharge rates reduce capacity. Always start a flight with a fully charged battery." },
+      { term: "Density Altitude Impact", def: "High density altitude (hot/high/humid) reduces motor and prop performance, shortens flight time, increases takeoff distance." },
+      { term: "Loading Effects", def: "Heavier aircraft: shorter flight time, slower climb, longer takeoff/landing distance, reduced maneuverability." },
+      { term: "Manufacturer Specs", def: "Always consult max takeoff weight, payload limits, operating temperature range, and battery specs in the manufacturer's documentation." },
+      { term: "Wind Loading", def: "Strong winds increase battery drain because the aircraft works harder to maintain position. Plan for shorter flight times in wind." }
+    ],
+    questions: [
+      {
+        q: "What is the maximum takeoff weight allowed under Part 107?",
+        opts: ["25 lbs", "Less than 55 lbs", "100 lbs", "There is no limit"],
+        correct: 1,
+        exp: "Part 107 applies to small unmanned aircraft systems weighing LESS THAN 55 pounds at takeoff, including everything onboard."
+      },
+      {
+        q: "A forward center of gravity makes a drone:",
+        opts: [
+          "Less stable and harder to control",
+          "More stable but less maneuverable",
+          "Faster",
+          "More efficient in hovering"
+        ],
+        correct: 1,
+        exp: "Forward CG (nose-heavy) increases stability but reduces maneuverability. The aircraft may resist pitching up and have a slower climb."
+      },
+      {
+        q: "An aft center of gravity:",
+        opts: [
+          "Improves stability",
+          "Reduces maneuverability",
+          "Can lead to loss of pitch control",
+          "Has no effect on flight"
+        ],
+        correct: 2,
+        exp: "Aft CG (tail-heavy) makes the drone more responsive but can lead to instability and loss of pitch control, especially if too far aft."
+      },
+      {
+        q: "Which condition will most likely degrade your drone's performance?",
+        opts: [
+          "Low temperature, low altitude, dry air",
+          "High temperature, high altitude, humid air",
+          "Calm wind",
+          "Standard atmospheric conditions"
+        ],
+        correct: 1,
+        exp: "High density altitude (hot, high, humid) reduces air density, which reduces motor efficiency, propeller lift, and overall performance."
+      },
+      {
+        q: "Adding payload to a drone typically:",
+        opts: [
+          "Increases flight time",
+          "Has no effect on performance",
+          "Reduces flight time and maneuverability",
+          "Improves wind resistance"
+        ],
+        correct: 2,
+        exp: "Additional weight means motors work harder, batteries drain faster, climb rate decreases, and the aircraft is less responsive."
+      },
+      {
+        q: "How does cold weather affect LiPo batteries?",
+        opts: [
+          "Increases capacity",
+          "Reduces capacity and voltage under load",
+          "Has no effect",
+          "Improves charge rate"
+        ],
+        correct: 1,
+        exp: "Cold temperatures reduce battery capacity and voltage sag is worse under load. Always warm batteries to operating temperature before flight in cold weather."
+      },
+      {
+        q: "Strong wind affects flight time by:",
+        opts: [
+          "Increasing it due to lift",
+          "Not affecting it",
+          "Reducing it because the aircraft works harder",
+          "Reducing it only when flying downwind"
+        ],
+        correct: 2,
+        exp: "Wind makes the aircraft work harder to maintain position and direction, increasing power draw and reducing flight time."
+      },
+      {
+        q: "When is the best time to verify weight, balance, and payload limits?",
+        opts: [
+          "During the flight",
+          "Before flight, against manufacturer specifications",
+          "After landing",
+          "Only on the first flight of the day"
+        ],
+        correct: 1,
+        exp: "Verify all weight and balance considerations against the manufacturer's specifications during preflight planning and inspection."
+      },
+      {
+        q: "If you fly with maximum payload in hot, humid weather at high elevation, you should expect:",
+        opts: [
+          "Improved performance",
+          "Normal performance",
+          "Reduced flight time, slower climb, longer takeoff",
+          "Better battery efficiency"
+        ],
+        correct: 2,
+        exp: "Maximum loading combined with high density altitude compounds performance reductions: shorter flights, slower climb, longer takeoff distance, reduced control margins."
+      }
+    ],
+    topics: [
+      {
+        name: "Weight & Balance",
+        content: `<h3>Why It Matters</h3>
+          <p>Even though drones are small, weight and balance affect flight characteristics, safety, and battery life. The 55-pound Part 107 limit is the legal ceiling, but your specific aircraft has lower limits set by the manufacturer.</p>
+          <p><strong>Total weight:</strong> Includes the frame, motors, propellers, batteries, camera/payload, and any accessories.</p>
+          <p><strong>Effects of being overweight:</strong></p>
+          <ul>
+            <li>Reduced climb performance</li>
+            <li>Shorter flight time</li>
+            <li>Longer takeoff and landing distance</li>
+            <li>Reduced ability to react to wind</li>
+            <li>Risk of motor or propeller failure under load</li>
+            <li>Potential Part 107 violation if exceeding 55 lbs</li>
+          </ul>`
+      },
+      {
+        name: "Center of Gravity",
+        content: `<h3>Balance Matters</h3>
+          <p>Center of gravity is the point where the aircraft would balance if you supported it on one point. CG affects stability and control response.</p>
+          <p><strong>Forward CG (nose-heavy):</strong></p>
+          <ul>
+            <li>Increased stability</li>
+            <li>Reduced maneuverability</li>
+            <li>Slower pitch response</li>
+            <li>Sluggish climb</li>
+          </ul>
+          <p><strong>Aft CG (tail-heavy):</strong></p>
+          <ul>
+            <li>More responsive controls</li>
+            <li>Reduced stability</li>
+            <li>Can lead to loss of pitch control</li>
+            <li>Stall recovery harder (mostly applies to fixed-wing UAS)</li>
+          </ul>
+          <p><strong>Multirotors:</strong> Flight controllers compensate for moderate CG offset, but extreme imbalance burns more battery on one set of motors and can cause control issues.</p>`
+      },
+      {
+        name: "Performance Factors",
+        content: `<h3>What Affects Performance</h3>
+          <p>Performance is the aircraft's ability to climb, maintain altitude, cover ground, and respond to inputs. Three main categories of factors:</p>
+          <p><strong>Aircraft factors:</strong></p>
+          <ul>
+            <li>Weight (heavier = worse)</li>
+            <li>Center of gravity</li>
+            <li>Battery state (charge, age, temperature)</li>
+            <li>Motor and propeller condition</li>
+          </ul>
+          <p><strong>Atmospheric factors:</strong></p>
+          <ul>
+            <li>Temperature (hot air = less dense = worse)</li>
+            <li>Altitude (higher = less dense = worse)</li>
+            <li>Humidity (more water vapor = less dense = worse)</li>
+            <li>Pressure (lower pressure = less dense = worse)</li>
+          </ul>
+          <p><strong>Operational factors:</strong></p>
+          <ul>
+            <li>Wind (more wind = more battery drain)</li>
+            <li>Flight maneuvers (aggressive = more drain)</li>
+            <li>Altitude flown</li>
+          </ul>`
+      },
+      {
+        name: "Batteries",
+        content: `<h3>Battery Management</h3>
+          <p>Most consumer and commercial drones use LiPo (lithium polymer) batteries. They're light and energy-dense but require care.</p>
+          <p><strong>Capacity affects:</strong></p>
+          <ul>
+            <li>Total flight time</li>
+            <li>Available power for climbs and aggressive maneuvers</li>
+          </ul>
+          <p><strong>What reduces capacity:</strong></p>
+          <ul>
+            <li>Cold temperatures (significant reduction below 50°F)</li>
+            <li>Age and number of charge cycles</li>
+            <li>Deep discharge (going below recommended voltage damages the cell)</li>
+            <li>High discharge rates (aggressive flying)</li>
+          </ul>
+          <p><strong>Best practices:</strong></p>
+          <ul>
+            <li>Start every flight with a fully charged battery</li>
+            <li>Warm batteries to room temp before flying in cold</li>
+            <li>Land before battery reaches minimum voltage (most drones warn at 30% and force land at lower thresholds)</li>
+            <li>Store batteries at storage voltage (around 3.8V/cell) if not flying for a few days</li>
+            <li>Never use a swollen or damaged battery</li>
+          </ul>`
+      },
+      {
+        name: "Environmental Effects",
+        content: `<h3>How the Environment Limits You</h3>
+          <p><strong>Temperature:</strong></p>
+          <ul>
+            <li>Cold reduces battery performance significantly</li>
+            <li>Hot reduces motor cooling and air density</li>
+            <li>Most drones rated 32°F to 104°F (0-40°C); check specs</li>
+          </ul>
+          <p><strong>Wind:</strong></p>
+          <ul>
+            <li>Increases power draw to maintain position</li>
+            <li>Reduces flight time</li>
+            <li>Most drones rated to a max wind speed (often 20-25 mph)</li>
+            <li>Gusts more dangerous than steady wind</li>
+          </ul>
+          <p><strong>Precipitation:</strong></p>
+          <ul>
+            <li>Most consumer drones not rated for rain</li>
+            <li>Water in motors or electronics causes failure</li>
+            <li>Snow and ice add weight and unbalance props</li>
+          </ul>
+          <p><strong>Altitude/Density Altitude:</strong></p>
+          <ul>
+            <li>Higher elevation operations need more power</li>
+            <li>Hot humid days at elevation are worst-case for performance</li>
+            <li>Plan for shorter flights and slower response</li>
+          </ul>`
+      }
+    ],
+    reference: [
+      { title: "Max Weight", body: "Less than 55 lbs at takeoff (Part 107)" },
+      { title: "Forward CG", body: "Nose-heavy: stable but less maneuverable" },
+      { title: "Aft CG", body: "Tail-heavy: responsive but less stable" },
+      { title: "Density Altitude", body: "High/Hot/Humid degrades performance" },
+      { title: "Cold Batteries", body: "Reduced capacity; warm before flight" },
+      { title: "Wind Effect", body: "Increases battery drain, shortens flight time" },
+      { title: "Heavy Payload", body: "Shorter flight, slower climb, less responsive" },
+      { title: "Preflight", body: "Check weight against manufacturer max takeoff weight" },
+      { title: "Battery Storage", body: "~3.8V/cell if not flying for days" }
+    ]
+  },
+
+  operations: {
+    name: "Operations",
+    flashcards: [
+      { term: "RPIC", def: "Remote Pilot in Command. Directly responsible for and the final authority over the operation. Holds the Remote Pilot Certificate." },
+      { term: "Visual Observer (VO)", def: "Optional crew member who maintains visual line of sight on the aircraft and communicates with the RPIC." },
+      { term: "ADM", def: "Aeronautical Decision Making. A systematic approach to evaluating each situation and choosing the safest course of action." },
+      { term: "CRM", def: "Crew Resource Management. Effective use of all available resources (people, equipment, information) to operate safely." },
+      { term: "5 Hazardous Attitudes", def: "Anti-authority ('Don't tell me'), Impulsivity ('Do something quickly'), Invulnerability ('It won't happen to me'), Macho ('I can do it'), Resignation ('What's the use')." },
+      { term: "IMSAFE", def: "Self-check: Illness, Medication, Stress, Alcohol, Fatigue, Emotion. Run before every flight." },
+      { term: "PAVE", def: "Risk checklist: Pilot, Aircraft, enVironment, External pressures." },
+      { term: "DECIDE Model", def: "Detect a change, Estimate need to react, Choose desired outcome, Identify actions, Do the action, Evaluate the effect." },
+      { term: "CTAF", def: "Common Traffic Advisory Frequency. Radio frequency used at non-towered airports for self-announcement of position and intentions." },
+      { term: "Right of Way", def: "Drones must yield to ALL other aircraft: manned, balloons, gliders, ultralights. Manned aircraft always have right of way." },
+      { term: "Alcohol Rule", def: "No flying within 8 hours of consuming alcohol ('8 hours bottle to throttle'). BAC must be below 0.04. No flying while under the influence." },
+      { term: "Night Vision", def: "Use peripheral (off-center) viewing at night. Cones (color) need light; rods (peripheral) work in low light but are color-blind." },
+      { term: "Preflight Inspection", def: "Required before every flight. Check airframe, propellers, motors, battery, controller, firmware, environment, and weather." },
+      { term: "Lost Link Procedure", def: "Pre-set behavior when control signal is lost: typically Return to Home, hover, or land. Set before flight." }
+    ],
+    questions: [
+      {
+        q: "Which is one of the five hazardous attitudes?",
+        opts: ["Confidence", "Patience", "Invulnerability", "Curiosity"],
+        correct: 2,
+        exp: "The five hazardous attitudes are: Anti-authority, Impulsivity, Invulnerability, Macho, and Resignation. Each has a recognized antidote."
+      },
+      {
+        q: "The 'M' in IMSAFE stands for:",
+        opts: ["Mental state", "Medication", "Maintenance", "Mission"],
+        correct: 1,
+        exp: "IMSAFE checklist: Illness, Medication, Stress, Alcohol, Fatigue, Emotion. Medication includes prescription and OTC drugs that could affect performance."
+      },
+      {
+        q: "A drone operator must yield right of way to:",
+        opts: [
+          "Only manned aircraft on final approach",
+          "Only aircraft in controlled airspace",
+          "All other aircraft, including manned and unmanned",
+          "Only ATC-directed traffic"
+        ],
+        correct: 2,
+        exp: "Under Part 107, the remote pilot must give way to ALL other aircraft and may not interfere with them in any way."
+      },
+      {
+        q: "How long after consuming alcohol must a remote pilot wait before operating?",
+        opts: ["4 hours", "8 hours", "12 hours", "24 hours"],
+        correct: 1,
+        exp: "FAA rule is no operation within 8 hours of alcohol consumption ('8 hours bottle to throttle'), with BAC below 0.04 and not under the influence."
+      },
+      {
+        q: "The antidote to 'Macho' as a hazardous attitude is:",
+        opts: [
+          "I can do it",
+          "Taking chances is foolish",
+          "Follow the rules",
+          "Not so fast, think first"
+        ],
+        correct: 1,
+        exp: "Each hazardous attitude has an antidote. Macho ('I can do it') is countered by 'Taking chances is foolish.'"
+      },
+      {
+        q: "At night, where should a pilot focus their eyes to best see a dim object?",
+        opts: [
+          "Directly at the object",
+          "About 10 degrees off to the side (peripheral viewing)",
+          "Close one eye and stare at it",
+          "Use only red light directly at it"
+        ],
+        correct: 1,
+        exp: "At night, the rods (responsible for low-light vision) are located off-center on the retina. Looking slightly to the side of an object allows better detection in dim conditions."
+      },
+      {
+        q: "If communication is lost with the drone (signal failure), the drone should:",
+        opts: [
+          "Continue the mission",
+          "Execute a preset lost link procedure (typically RTH, hover, or land)",
+          "Wait for the pilot to physically retrieve it",
+          "Crash safely"
+        ],
+        correct: 1,
+        exp: "Lost link procedures should be configured before flight. Common options are Return to Home, hover in place until reconnected, or auto-land."
+      },
+      {
+        q: "What is the primary purpose of CRM?",
+        opts: [
+          "Filing flight plans",
+          "Effective use of all available resources to operate safely",
+          "Managing customer relationships",
+          "Filing reports with the FAA"
+        ],
+        correct: 1,
+        exp: "Crew Resource Management is the effective use of all available resources, including hardware, software, people, and information, for safe operation."
+      },
+      {
+        q: "At a non-towered airport, drone pilots monitor which frequency for situational awareness?",
+        opts: ["Approach control", "Tower frequency", "CTAF", "Guard frequency 121.5"],
+        correct: 2,
+        exp: "Non-towered airports use the Common Traffic Advisory Frequency where aircraft self-announce position and intentions."
+      },
+      {
+        q: "What should the remote pilot do FIRST during preflight planning?",
+        opts: [
+          "Start the motors",
+          "Assess weather, airspace, and the operating environment",
+          "Take off and observe conditions",
+          "Charge the battery"
+        ],
+        correct: 1,
+        exp: "Preflight planning includes weather check, airspace check, NOTAMs and TFRs, terrain and obstacles, crew briefing, and aircraft inspection."
+      },
+      {
+        q: "A pilot feels pressure from their boss to fly in marginal weather. This is an example of:",
+        opts: [
+          "Aeronautical Decision Making",
+          "An external pressure (the 'E' in PAVE)",
+          "Impulsivity",
+          "Crew Resource Management"
+        ],
+        correct: 1,
+        exp: "External pressures are the 'E' in PAVE. Pressure from employers, deadlines, or self-imposed expectations can compromise safety decisions."
+      },
+      {
+        q: "The DECIDE model is used for:",
+        opts: [
+          "Filing flight plans",
+          "Calculating weight and balance",
+          "Systematic decision making in flight",
+          "Setting up the aircraft"
+        ],
+        correct: 2,
+        exp: "DECIDE (Detect, Estimate, Choose, Identify, Do, Evaluate) is a systematic approach to making decisions in flight when conditions change."
+      }
+    ],
+    topics: [
+      {
+        name: "ADM & CRM",
+        content: `<h3>Aeronautical Decision Making</h3>
+          <p>ADM is a systematic approach to risk management and decision making. The FAA wants you to think about safety actively, not just react.</p>
+          <p><strong>Models you should know:</strong></p>
+          <ul>
+            <li><strong>DECIDE:</strong> Detect, Estimate, Choose, Identify, Do, Evaluate</li>
+            <li><strong>3P:</strong> Perceive, Process, Perform</li>
+            <li><strong>PAVE:</strong> Pilot, Aircraft, enVironment, External pressures</li>
+            <li><strong>IMSAFE:</strong> Illness, Medication, Stress, Alcohol, Fatigue, Emotion</li>
+          </ul>
+          <p><strong>5 Hazardous Attitudes and Antidotes:</strong></p>
+          <ul>
+            <li><strong>Anti-authority</strong> ('Don't tell me') -> Follow the rules, they are usually right</li>
+            <li><strong>Impulsivity</strong> ('Do something quickly') -> Not so fast, think first</li>
+            <li><strong>Invulnerability</strong> ('It won't happen to me') -> It could happen to me</li>
+            <li><strong>Macho</strong> ('I can do it') -> Taking chances is foolish</li>
+            <li><strong>Resignation</strong> ('What's the use') -> I'm not helpless, I can make a difference</li>
+          </ul>
+          <p><strong>Crew Resource Management (CRM):</strong> Use everything available: visual observers, weather services, manuals, ATC, other pilots. Effective communication and task management.</p>`
+      },
+      {
+        name: "Radio Comms",
+        content: `<h3>Radio Communications</h3>
+          <p>Part 107 does not require drone pilots to have a radio, but monitoring local frequencies improves situational awareness near airports.</p>
+          <p><strong>CTAF (Common Traffic Advisory Frequency):</strong> Used at non-towered airports for self-announcement. Aircraft announce position, intentions, and pattern entry.</p>
+          <p><strong>Tower frequencies:</strong> At towered airports, all manned aircraft communicate with ATC. Drones do not enter Class B/C/D without authorization (via LAANC or DroneZone).</p>
+          <p><strong>Standard reporting points (manned):</strong> Aircraft typically report at 10 miles out, entering downwind, base, final, and clear of runway. Knowing this helps you anticipate where manned traffic will be.</p>
+          <p><strong>Phonetic alphabet:</strong> Alpha, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliet, Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-ray, Yankee, Zulu.</p>`
+      },
+      {
+        name: "Airport Ops",
+        content: `<h3>Operating Near Airports</h3>
+          <p>Most accidents involving drones and manned aircraft happen near airports. Even when authorized, fly defensively.</p>
+          <p><strong>Standard traffic pattern:</strong> Left-hand turns at most airports (right-hand only where noted on chart with 'R' inside the airport symbol). Pattern altitude typically 1,000 ft AGL.</p>
+          <p><strong>Pattern segments:</strong> Upwind, crosswind, downwind, base, final.</p>
+          <p><strong>Stay out of approach/departure paths.</strong> Even if you're authorized in the airspace, manned aircraft on final approach are at low altitude and high workload.</p>
+          <p><strong>Airport markings on sectional:</strong></p>
+          <ul>
+            <li>Blue airport symbol = control tower</li>
+            <li>Magenta = non-towered</li>
+            <li>Star on top = beacon</li>
+            <li>R = right-hand traffic pattern in use</li>
+            <li>Underlined name = no service after sunset</li>
+            <li>NFCT = non-Federal Control Tower</li>
+          </ul>
+          <p><strong>Right of way:</strong> The drone always yields. Always.</p>`
+      },
+      {
+        name: "Emergency Procedures",
+        content: `<h3>When Things Go Wrong</h3>
+          <p><strong>Lost link:</strong> Signal between controller and aircraft is lost. Aircraft should execute preset behavior: Return to Home, hover, or land.</p>
+          <p><strong>Fly-away:</strong> Aircraft moves unexpectedly and ignores control inputs. Causes can include compass error, GPS issues, or interference. Immediately try to regain control or trigger RTH.</p>
+          <p><strong>Battery failure:</strong> Land immediately if battery warning appears. Don't try to push to original landing zone if voltage is critical.</p>
+          <p><strong>Motor or prop failure:</strong> Land immediately. Multirotors with one motor failure may be partially controllable but at risk.</p>
+          <p><strong>GPS loss:</strong> Aircraft may switch from GPS hold to ATTI mode. Be prepared for it to drift with wind. Manually fly back to a safe area.</p>
+          <p><strong>Incident response:</strong></p>
+          <ol style="margin-left: 20px;">
+            <li>Maintain safety of people on the ground first</li>
+            <li>Contain the situation</li>
+            <li>If accident occurs: report to FAA within 10 calendar days for serious injury or $500+ property damage</li>
+            <li>Document the incident</li>
+            <li>NTSB notification required for fatality, serious injury, or substantial property damage</li>
+          </ol>`
+      },
+      {
+        name: "Physiology",
+        content: `<h3>The Pilot is Part of the System</h3>
+          <p>Drone pilots are on the ground, so traditional pilot physiology issues (hypoxia, decompression) don't apply directly. But other factors still affect performance.</p>
+          <p><strong>Vision:</strong></p>
+          <ul>
+            <li><strong>Cones (central, color):</strong> Need bright light. Used for reading, color detail.</li>
+            <li><strong>Rods (peripheral, no color):</strong> Work in dim light. Look slightly off-center to see dim objects at night.</li>
+            <li>Night vision adapts over 30 minutes. Red light preserves it; white light destroys it.</li>
+          </ul>
+          <p><strong>Fatigue:</strong> Reduces attention, reaction time, decision quality. Don't fly when tired.</p>
+          <p><strong>Stress:</strong> Acute (short-term: heavy traffic, deadline) and chronic (ongoing: financial, family). Both impair judgment.</p>
+          <p><strong>Dehydration:</strong> Common in hot weather. Reduces concentration. Drink water before/during operations.</p>
+          <p><strong>Alcohol:</strong> 8 hours bottle to throttle, BAC below 0.04, not under the influence. Hangover impairs performance too.</p>
+          <p><strong>Medication:</strong> Check OTC and prescription drugs. Antihistamines, sleep aids, and many others affect alertness.</p>
+          <p><strong>Hyperventilation:</strong> Rapid breathing due to stress can cause dizziness. Slow breathing, talk through it, or breathe into a bag.</p>`
+      },
+      {
+        name: "Maintenance",
+        content: `<h3>Keeping the Aircraft Safe</h3>
+          <p><strong>Preflight inspection</strong> required before every flight:</p>
+          <ul>
+            <li>Visual check of airframe (cracks, loose parts)</li>
+            <li>Propellers (chips, cracks, balance)</li>
+            <li>Motors (free spin, no debris)</li>
+            <li>Battery (no swelling, voltage, secure mounting)</li>
+            <li>Controller (battery, sticks, firmware)</li>
+            <li>Camera/gimbal (free movement, clean lens)</li>
+            <li>Memory card and storage</li>
+            <li>Compass/IMU calibration if needed</li>
+            <li>GPS lock</li>
+            <li>RTH point and altitude</li>
+            <li>Local conditions (weather, wind, obstacles)</li>
+          </ul>
+          <p><strong>Scheduled maintenance:</strong> Follow manufacturer recommendations. Common items: propeller replacement, motor cleaning, firmware updates.</p>
+          <p><strong>After an incident:</strong> Inspect thoroughly before flying again. Even minor hard landings can damage motors or arms.</p>
+          <p><strong>Documentation:</strong> Keep maintenance logs especially if flying commercially. Documents incidents, repairs, and firmware updates.</p>`
+      },
+      {
+        name: "Night Ops",
+        content: `<h3>Flying After Dark</h3>
+          <p>Night operations are allowed under Part 107 as of April 2021, but with extra requirements.</p>
+          <p><strong>Requirements:</strong></p>
+          <ul>
+            <li>Remote pilot has completed updated initial knowledge test or recurrent training</li>
+            <li>Aircraft has anti-collision lighting visible for at least 3 statute miles</li>
+            <li>Lighting must have a flash rate sufficient to avoid collision</li>
+          </ul>
+          <p><strong>Civil twilight:</strong> 30 minutes before official sunrise and 30 minutes after official sunset. Counted as 'night' if before/after this window without proper lighting.</p>
+          <p><strong>Additional challenges at night:</strong></p>
+          <ul>
+            <li>Hard to maintain visual line of sight</li>
+            <li>Hard to judge altitude and distance</li>
+            <li>Obstacles harder to see</li>
+            <li>Battery performance varies with temperature drop</li>
+          </ul>
+          <p><strong>Tips:</strong></p>
+          <ul>
+            <li>Preplan flight route during daylight</li>
+            <li>Use visual observers</li>
+            <li>Keep aircraft close</li>
+            <li>Use red light at the control station to preserve night vision</li>
+            <li>Allow 30 minutes for eyes to adapt to darkness before flying</li>
+          </ul>`
+      }
+    ],
+    reference: [
+      { title: "Hazardous Attitudes", body: "Anti-authority, Impulsivity, Invulnerability, Macho, Resignation" },
+      { title: "IMSAFE", body: "Illness, Medication, Stress, Alcohol, Fatigue, Emotion" },
+      { title: "PAVE", body: "Pilot, Aircraft, enVironment, External pressures" },
+      { title: "DECIDE", body: "Detect, Estimate, Choose, Identify, Do, Evaluate" },
+      { title: "Alcohol", body: "8 hrs bottle to throttle, BAC < 0.04, not under influence" },
+      { title: "Right of Way", body: "Drones yield to ALL other aircraft" },
+      { title: "Night Ops", body: "Anti-collision lights visible 3 SM + updated training" },
+      { title: "Civil Twilight", body: "30 min before sunrise / after sunset" },
+      { title: "Lost Link", body: "Aircraft executes preset behavior: RTH, hover, or land" },
+      { title: "Night Vision", body: "Use peripheral viewing, avoid bright light, 30 min adapt" },
+      { title: "Pattern Direction", body: "Standard left turns; right pattern marked 'R' on chart" },
+      { title: "Pattern Altitude", body: "Typically 1,000 ft AGL for manned aircraft" }
+    ]
+  }
+};
+
+// ============================================================
+// RENDERING LOGIC
+// ============================================================
+
+const TOPIC_ORDER = ["regulations", "airspace", "weather", "loading", "operations"];
+const TABS = [
+  { id: "flashcards", name: "Flashcards" },
+  { id: "questions", name: "Practice" },
+  { id: "topics", name: "Breakdown" },
+  { id: "reference", name: "Reference" }
+];
+
+const state = {
+  topic: "regulations",
+  tab: "flashcards",
+  flashIndex: 0,
+  flashFlipped: false,
+  qIndex: 0,
+  qAnswered: false,
+  qSelected: null,
+  qCorrect: 0,
+  qTotal: 0,
+  topicSub: 0
+};
+
+function renderTopicBar() {
+  const bar = document.getElementById("topicBar");
+  bar.innerHTML = "";
+  TOPIC_ORDER.forEach(t => {
+    const btn = document.createElement("button");
+    btn.textContent = DATA[t].name;
+    if (state.topic === t) btn.classList.add("active");
+    btn.onclick = () => {
+      state.topic = t;
+      state.flashIndex = 0;
+      state.flashFlipped = false;
+      state.qIndex = 0;
+      state.qAnswered = false;
+      state.qSelected = null;
+      state.qCorrect = 0;
+      state.qTotal = 0;
+      state.topicSub = 0;
+      renderAll();
+    };
+    bar.appendChild(btn);
+  });
+}
+
+function renderTabBar() {
+  const bar = document.getElementById("tabBar");
+  bar.innerHTML = "";
+  TABS.forEach(t => {
+    const btn = document.createElement("button");
+    btn.textContent = t.name;
+    if (state.tab === t.id) btn.classList.add("active");
+    btn.onclick = () => { state.tab = t.id; renderContent(); };
+    bar.appendChild(btn);
+  });
+}
+
+function renderContent() {
+  const el = document.getElementById("content");
+  el.innerHTML = "";
+  const data = DATA[state.topic];
+  if (state.tab === "flashcards") renderFlashcards(el, data);
+  else if (state.tab === "questions") renderQuestions(el, data);
+  else if (state.tab === "topics") renderTopics(el, data);
+  else renderReference(el, data);
+}
+
+function renderFlashcards(el, data) {
+  const cards = data.flashcards;
+  const c = cards[state.flashIndex];
+  const card = document.createElement("div");
+  card.className = "flashcard";
+  if (!state.flashFlipped) {
+    card.innerHTML = `<div class="label">Term</div><div class="term">${c.term}</div><div class="definition" style="color:#888;font-size:0.85rem;margin-top:16px;">Tap to reveal</div>`;
+  } else {
+    card.innerHTML = `<div class="label">Definition</div><div class="term" style="font-size:1.1rem;">${c.term}</div><div class="definition" style="margin-top:12px;">${c.def}</div>`;
+  }
+  card.onclick = () => { state.flashFlipped = !state.flashFlipped; renderContent(); };
+  el.appendChild(card);
+
+  const nav = document.createElement("div");
+  nav.className = "nav-row";
+  const prev = document.createElement("button");
+  prev.textContent = "← Prev";
+  prev.disabled = state.flashIndex === 0;
+  prev.onclick = () => { state.flashIndex--; state.flashFlipped = false; renderContent(); };
+  const counter = document.createElement("span");
+  counter.className = "counter";
+  counter.textContent = `${state.flashIndex + 1} / ${cards.length}`;
+  const next = document.createElement("button");
+  next.textContent = "Next →";
+  next.disabled = state.flashIndex === cards.length - 1;
+  next.onclick = () => { state.flashIndex++; state.flashFlipped = false; renderContent(); };
+  nav.append(prev, counter, next);
+  el.appendChild(nav);
+}
+
+function renderQuestions(el, data) {
+  const qs = data.questions;
+  const q = qs[state.qIndex];
+
+  if (state.qTotal > 0) {
+    const stats = document.createElement("div");
+    stats.className = "stats";
+    stats.innerHTML = `
+      <div class="stat"><div class="stat-val">${state.qCorrect}</div><div class="stat-label">Correct</div></div>
+      <div class="stat"><div class="stat-val">${state.qTotal}</div><div class="stat-label">Answered</div></div>
+      <div class="stat"><div class="stat-val">${Math.round((state.qCorrect/state.qTotal)*100)}%</div><div class="stat-label">Score</div></div>
+    `;
+    el.appendChild(stats);
+  }
+
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `<div class="question">${state.qIndex + 1}. ${q.q}</div>`;
+  const opts = document.createElement("div");
+  opts.className = "options";
+  q.opts.forEach((opt, i) => {
+    const b = document.createElement("button");
+    b.className = "option";
+    b.textContent = `${String.fromCharCode(65 + i)}. ${opt}`;
+    b.disabled = state.qAnswered;
+    if (state.qAnswered) {
+      if (i === q.correct) b.classList.add("correct");
+      else if (i === state.qSelected) b.classList.add("incorrect");
+    }
+    b.onclick = () => {
+      if (state.qAnswered) return;
+      state.qSelected = i;
+      state.qAnswered = true;
+      state.qTotal++;
+      if (i === q.correct) state.qCorrect++;
+      renderContent();
+    };
+    opts.appendChild(b);
+  });
+  card.appendChild(opts);
+  if (state.qAnswered) {
+    const exp = document.createElement("div");
+    exp.className = "explanation";
+    exp.innerHTML = `<strong>${state.qSelected === q.correct ? "Correct" : "Incorrect"}.</strong> ${q.exp}`;
+    card.appendChild(exp);
+  }
+  el.appendChild(card);
+
+  const nav = document.createElement("div");
+  nav.className = "nav-row";
+  const prev = document.createElement("button");
+  prev.textContent = "← Prev";
+  prev.disabled = state.qIndex === 0;
+  prev.onclick = () => {
+    state.qIndex--;
+    state.qAnswered = false;
+    state.qSelected = null;
+    renderContent();
+  };
+  const counter = document.createElement("span");
+  counter.className = "counter";
+  counter.textContent = `${state.qIndex + 1} / ${qs.length}`;
+  const next = document.createElement("button");
+  next.textContent = "Next →";
+  next.disabled = state.qIndex === qs.length - 1;
+  next.onclick = () => {
+    state.qIndex++;
+    state.qAnswered = false;
+    state.qSelected = null;
+    renderContent();
+  };
+  nav.append(prev, counter, next);
+  el.appendChild(nav);
+}
+
+function renderTopics(el, data) {
+  const pills = document.createElement("div");
+  pills.className = "pill-row";
+  data.topics.forEach((t, i) => {
+    const p = document.createElement("div");
+    p.className = "pill";
+    p.textContent = t.name;
+    if (i === state.topicSub) p.classList.add("active");
+    p.onclick = () => { state.topicSub = i; renderContent(); };
+    pills.appendChild(p);
+  });
+  el.appendChild(pills);
+
+  const card = document.createElement("div");
+  card.className = "card breakdown";
+  card.innerHTML = data.topics[state.topicSub].content;
+  el.appendChild(card);
+}
+
+function renderReference(el, data) {
+  const grid = document.createElement("div");
+  grid.className = "reference";
+  data.reference.forEach(r => {
+    const item = document.createElement("div");
+    item.className = "ref-item";
+    item.innerHTML = `<h4>${r.title}</h4><p>${r.body}</p>`;
+    grid.appendChild(item);
+  });
+  el.appendChild(grid);
+}
+
+function renderAll() {
+  renderTopicBar();
+  renderTabBar();
+  renderContent();
+}
+
+renderAll();
+</script>
+</body>
+</html>
