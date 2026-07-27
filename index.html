@@ -227,6 +227,116 @@
     margin-bottom: 6px;
   }
   .ref-item p { font-size: 0.9rem; color: #ccc; }
+  .svg-block {
+    background: #f5f0e1;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+    text-align: center;
+  }
+  .svg-block svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+  .svg-caption {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 8px;
+    font-style: italic;
+  }
+  .chart-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+    color: #0f1419;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+  }
+  .chart-btn:hover { background: linear-gradient(135deg, #29b6f6, #039be5); }
+  .chart-callout {
+    background: #232c36;
+    border-left: 4px solid #ff9800;
+    padding: 14px;
+    border-radius: 6px;
+    margin: 12px 0;
+    font-size: 0.9rem;
+  }
+  .chart-callout strong { color: #ff9800; }
+  .booklet-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+    color: #0f1419;
+    border: none;
+    border-radius: 28px;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .booklet-fab:active { transform: scale(0.96); }
+  .booklet-overlay {
+    position: fixed;
+    inset: 0;
+    background: #0f1419;
+    z-index: 200;
+    display: none;
+    flex-direction: column;
+  }
+  .booklet-overlay.open { display: flex; }
+  .booklet-header {
+    background: #1a2027;
+    padding: 12px 16px;
+    padding-top: calc(12px + env(safe-area-inset-top));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #2a3540;
+  }
+  .booklet-title {
+    color: #4fc3f7;
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .booklet-close {
+    background: #2a3540;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .booklet-frame {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: #fff;
+  }
+  .booklet-fallback {
+    padding: 24px;
+    color: #ddd;
+    text-align: center;
+  }
+  .booklet-fallback a {
+    display: inline-block;
+    margin-top: 12px;
+    background: #4fc3f7;
+    color: #0f1419;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+  }
   .stats {
     background: #1a2027;
     padding: 12px;
@@ -264,6 +374,21 @@
   <div class="topic-bar" id="topicBar"></div>
   <div class="tab-bar" id="tabBar"></div>
   <div class="content" id="content"></div>
+</div>
+
+<button class="booklet-fab" id="bookletFab" onclick="openBooklet()">📖 Chart Booklet</button>
+
+<div class="booklet-overlay" id="bookletOverlay">
+  <div class="booklet-header">
+    <div class="booklet-title">FAA Chart Booklet (CT-8080-2H)</div>
+    <button class="booklet-close" onclick="closeBooklet()">Close ✕</button>
+  </div>
+  <iframe class="booklet-frame" id="bookletFrame" src="" title="FAA Chart Booklet"></iframe>
+  <div class="booklet-fallback" id="bookletFallback" style="display:none;">
+    <p>Chart booklet not found in your app folder.</p>
+    <p style="font-size:0.9rem;color:#aaa;margin-top:8px;">Download it from the FAA and add faa-supplement.pdf to your app folder.</p>
+    <a href="https://www.faa.gov/training_testing/testing/supplements/media/sport_rec_private_akts.pdf" target="_blank">Open FAA Website</a>
+  </div>
 </div>
 
 <script>
@@ -695,6 +820,44 @@ const DATA = {
           <p><strong>Altitude:</strong> 400 ft AGL maximum, unless within 400 ft radius of a structure, then 400 ft above the structure's uppermost limit.</p>
           <p><strong>Speed:</strong> 87 knots (100 mph) maximum groundspeed.</p>
           <p><strong>Visibility:</strong> 3 statute miles minimum from control station. 500 ft below clouds and 2,000 ft horizontal from clouds.</p>
+          <div class="svg-block">
+            <svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+              <text x="250" y="20" text-anchor="middle" fill="#333" font-size="14" font-weight="bold" font-family="sans-serif">Cloud Clearance Requirements</text>
+              <ellipse cx="130" cy="70" rx="80" ry="22" fill="#cfd8dc"/>
+              <ellipse cx="90" cy="76" rx="30" ry="14" fill="#cfd8dc"/>
+              <ellipse cx="160" cy="80" rx="35" ry="16" fill="#cfd8dc"/>
+              <g transform="translate(130, 155)">
+                <line x1="-14" y1="0" x2="14" y2="0" stroke="#0288d1" stroke-width="2"/>
+                <line x1="0" y1="-10" x2="0" y2="10" stroke="#0288d1" stroke-width="2"/>
+                <circle cx="-14" cy="-8" r="3.5" fill="#0288d1"/>
+                <circle cx="14" cy="-8" r="3.5" fill="#0288d1"/>
+                <circle cx="-14" cy="8" r="3.5" fill="#0288d1"/>
+                <circle cx="14" cy="8" r="3.5" fill="#0288d1"/>
+              </g>
+              <line x1="60" y1="90" x2="60" y2="150" stroke="#2e7d32" stroke-width="1.5"/>
+              <polygon points="55,95 60,85 65,95" fill="#2e7d32"/>
+              <polygon points="55,145 60,155 65,145" fill="#2e7d32"/>
+              <text x="15" y="120" fill="#2e7d32" font-size="13" font-weight="bold" font-family="sans-serif">500 ft</text>
+              <text x="10" y="135" fill="#2e7d32" font-size="10" font-family="sans-serif">below</text>
+              <ellipse cx="410" cy="130" rx="55" ry="18" fill="#cfd8dc"/>
+              <ellipse cx="440" cy="138" rx="22" ry="10" fill="#cfd8dc"/>
+              <g transform="translate(250, 195)">
+                <line x1="-14" y1="0" x2="14" y2="0" stroke="#0288d1" stroke-width="2"/>
+                <line x1="0" y1="-10" x2="0" y2="10" stroke="#0288d1" stroke-width="2"/>
+                <circle cx="-14" cy="-8" r="3.5" fill="#0288d1"/>
+                <circle cx="14" cy="-8" r="3.5" fill="#0288d1"/>
+                <circle cx="-14" cy="8" r="3.5" fill="#0288d1"/>
+                <circle cx="14" cy="8" r="3.5" fill="#0288d1"/>
+              </g>
+              <line x1="265" y1="195" x2="355" y2="140" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="4,3"/>
+              <polygon points="269,192 260,197 264,188" fill="#2e7d32"/>
+              <polygon points="352,143 361,138 355,148" fill="#2e7d32"/>
+              <text x="285" y="175" fill="#2e7d32" font-size="13" font-weight="bold" font-family="sans-serif">2,000 ft</text>
+              <text x="285" y="190" fill="#2e7d32" font-size="10" font-family="sans-serif">horizontal</text>
+              <text x="250" y="245" text-anchor="middle" fill="#666" font-size="10" font-family="sans-serif" font-style="italic">Also: 3 SM visibility minimum</text>
+            </svg>
+            <div class="svg-caption">Part 107 cloud clearance: 500 below, 2,000 horizontal.</div>
+          </div>
           <p><strong>Visual line of sight:</strong> Must be maintained at all times by the RPIC, person manipulating controls, or a visual observer. Corrective lenses allowed; binoculars not (except brief use).</p>
           <p><strong>Time of day:</strong> Daylight, civil twilight, or night with anti-collision lighting visible 3 SM and pilot trained on night ops.</p>
           <p><strong>Prohibited operations:</strong></p>
@@ -2610,6 +2773,30 @@ const DATA = {
         name: "Airport Ops",
         content: `<h3>Operating Near Airports</h3>
           <p>Most accidents involving drones and manned aircraft happen near airports. Even when authorized, fly defensively.</p>
+          <div class="svg-block">
+            <svg viewBox="0 0 500 280" xmlns="http://www.w3.org/2000/svg">
+              <text x="250" y="20" text-anchor="middle" fill="#333" font-size="14" font-weight="bold" font-family="sans-serif">Standard Traffic Pattern (Left Turns)</text>
+              <rect x="220" y="80" width="60" height="140" fill="#424242"/>
+              <line x1="250" y1="90" x2="250" y2="215" stroke="#fafafa" stroke-width="1.5" stroke-dasharray="6,4"/>
+              <text x="250" y="240" text-anchor="middle" fill="#333" font-size="10" font-weight="bold" font-family="sans-serif">RUNWAY</text>
+              <path d="M 250,235 L 250,220" stroke="#2e7d32" stroke-width="2" fill="none"/>
+              <polygon points="245,222 250,215 255,222" fill="#2e7d32"/>
+              <text x="285" y="230" fill="#2e7d32" font-size="10" font-weight="bold" font-family="sans-serif">1. Upwind</text>
+              <path d="M 250,90 L 130,90" stroke="#c2185b" stroke-width="2" fill="none"/>
+              <polygon points="135,85 125,90 135,95" fill="#c2185b"/>
+              <text x="140" y="80" fill="#c2185b" font-size="10" font-weight="bold" font-family="sans-serif">2. Crosswind</text>
+              <path d="M 130,90 L 130,220" stroke="#1565c0" stroke-width="2" fill="none"/>
+              <polygon points="125,215 130,225 135,215" fill="#1565c0"/>
+              <text x="50" y="160" fill="#1565c0" font-size="10" font-weight="bold" font-family="sans-serif">3. Downwind</text>
+              <path d="M 130,220 L 220,220" stroke="#ef6c00" stroke-width="2" fill="none"/>
+              <polygon points="215,215 225,220 215,225" fill="#ef6c00"/>
+              <text x="140" y="245" fill="#ef6c00" font-size="10" font-weight="bold" font-family="sans-serif">4. Base</text>
+              <path d="M 250,215 L 250,205" stroke="#7b1fa2" stroke-width="2" fill="none"/>
+              <text x="315" y="200" fill="#7b1fa2" font-size="10" font-weight="bold" font-family="sans-serif">5. Final</text>
+              <text x="250" y="265" text-anchor="middle" fill="#666" font-size="10" font-family="sans-serif" font-style="italic">Right pattern used only where R is shown on sectional</text>
+            </svg>
+            <div class="svg-caption">Traffic pattern segments. Aircraft land into the wind on the upwind end of the runway.</div>
+          </div>
           <p><strong>Standard traffic pattern:</strong> Left-hand turns at most airports (right-hand only where noted on chart with 'R' inside the airport symbol). Pattern altitude typically 1,000 ft AGL.</p>
           <p><strong>Pattern segments:</strong> Upwind, crosswind, downwind, base, final.</p>
           <p><strong>Stay out of approach/departure paths.</strong> Even if you're authorized in the airspace, manned aircraft on final approach are at low altitude and high workload.</p>
@@ -2999,37 +3186,84 @@ const DATA = {
         name: "Chart Basics",
         content: `<h3>Reading Sectional Charts</h3>
           <p>Sectional charts are the primary VFR navigation reference and the chart used on the Part 107 test. Scale is 1:500,000: one inch equals about 6.86 SM.</p>
-          <p><strong>The FAA Testing Supplement</strong> (FAA-CT-8080-2H) contains the chart figures used on the actual test. Download it free from faa.gov and practice reading each figure.</p>
-          <p><strong>Chart legend:</strong> The sectional includes a legend explaining every symbol. When taking the test you get a physical booklet with chart excerpts, so knowing the legend is important.</p>`
+          <div class="chart-callout">
+            <strong>You need this booklet:</strong> The FAA-CT-8080-2H Airman Knowledge Testing Supplement contains the exact chart figures used on the real test. You'll get a physical copy at your PSI testing center. Download the free PDF now and use it alongside this app.
+            <br><br>
+            <a class="chart-btn" href="https://www.faa.gov/training_testing/testing/supplements/media/sport_rec_private_akts.pdf" target="_blank">Open FAA Chart Booklet (PDF)</a>
+          </div>
+          <p><strong>How to practice with it:</strong> When you see a question that references "Figure X", open the PDF, find that figure, and answer while looking at it. This is how the real test works.</p>`
       },
       {
         name: "Airspace Colors",
         content: `<h3>Memorize These</h3>
+          <div class="svg-block">
+            <svg viewBox="0 0 500 340" xmlns="http://www.w3.org/2000/svg">
+              <text x="250" y="20" text-anchor="middle" fill="#333" font-size="14" font-weight="bold" font-family="sans-serif">Airspace Line Types on a Sectional</text>
+              <line x1="30" y1="55" x2="200" y2="55" stroke="#1565c0" stroke-width="4"/>
+              <text x="215" y="60" fill="#1565c0" font-size="13" font-weight="bold" font-family="sans-serif">Solid Blue = Class B</text>
+              <line x1="30" y1="95" x2="200" y2="95" stroke="#c2185b" stroke-width="4"/>
+              <text x="215" y="100" fill="#c2185b" font-size="13" font-weight="bold" font-family="sans-serif">Solid Magenta = Class C</text>
+              <line x1="30" y1="135" x2="200" y2="135" stroke="#1565c0" stroke-width="4" stroke-dasharray="10,5"/>
+              <text x="215" y="140" fill="#1565c0" font-size="13" font-weight="bold" font-family="sans-serif">Dashed Blue = Class D</text>
+              <line x1="30" y1="175" x2="200" y2="175" stroke="#c2185b" stroke-width="4" stroke-dasharray="10,5"/>
+              <text x="215" y="180" fill="#c2185b" font-size="13" font-weight="bold" font-family="sans-serif">Dashed Magenta = Class E surface</text>
+              <defs>
+                <linearGradient id="gradMag" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="rgba(194,24,91,0.6)"/>
+                  <stop offset="60%" stop-color="rgba(194,24,91,0.1)"/>
+                  <stop offset="100%" stop-color="rgba(194,24,91,0)"/>
+                </linearGradient>
+                <linearGradient id="gradBlue" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="rgba(21,101,192,0.6)"/>
+                  <stop offset="60%" stop-color="rgba(21,101,192,0.1)"/>
+                  <stop offset="100%" stop-color="rgba(21,101,192,0)"/>
+                </linearGradient>
+              </defs>
+              <rect x="30" y="205" width="170" height="24" fill="url(#gradMag)"/>
+              <text x="215" y="222" fill="#8e2c56" font-size="12" font-weight="bold" font-family="sans-serif">Faded Magenta = Class E @ 700 AGL</text>
+              <rect x="30" y="248" width="170" height="24" fill="url(#gradBlue)"/>
+              <text x="215" y="265" fill="#1565c0" font-size="12" font-weight="bold" font-family="sans-serif">Faded Blue = Class E @ 1,200 AGL</text>
+              <text x="250" y="305" text-anchor="middle" fill="#666" font-size="11" font-family="sans-serif" font-style="italic">Faded areas: Class G below the shown altitude</text>
+            </svg>
+            <div class="svg-caption">Chart line reference. Airport control tower presence: Blue = tower, Magenta = no tower.</div>
+          </div>
+          <p><strong>Memory tricks:</strong></p>
           <ul>
-            <li><strong>Solid blue line</strong> = Class B</li>
-            <li><strong>Solid magenta line</strong> = Class C</li>
-            <li><strong>Dashed blue line</strong> = Class D</li>
-            <li><strong>Dashed magenta line</strong> = Class E to the surface</li>
-            <li><strong>Faded magenta</strong> (from outside in) = Class E starts at 700 ft AGL</li>
-            <li><strong>Faded blue</strong> (from outside in) = Class E starts at 1,200 ft AGL</li>
+            <li>Alphabetically <strong>B before C</strong>, and <strong>blue before magenta</strong>. So B = blue, C = magenta.</li>
+            <li>Solid = higher class (B or C). Dashed = lower class (D or E surface).</li>
+            <li>Faded = elevated Class E floor. Magenta faded is <strong>lower</strong> (700), blue faded is <strong>higher</strong> (1,200).</li>
           </ul>
-          <p><strong>Trick to remember:</strong> Alphabetically B before C, and blue before magenta. So B = blue, C = magenta. D also uses blue (dashed).</p>
           <p><strong>Below faded areas:</strong> Class G. If you're beneath 700 or 1,200 AGL under those fade zones, no authorization needed.</p>`
       },
       {
         name: "Altitude Notation",
         content: `<h3>Reading Airspace Altitudes</h3>
-          <p><strong>Class B and Class C use stacked fractions:</strong></p>
+          <div class="svg-block">
+            <svg viewBox="0 0 500 200" xmlns="http://www.w3.org/2000/svg">
+              <text x="250" y="20" text-anchor="middle" fill="#333" font-size="14" font-weight="bold" font-family="sans-serif">Class B / C Altitude Notation</text>
+              <text x="90" y="80" text-anchor="middle" fill="#1565c0" font-size="32" font-weight="bold" font-family="serif">100</text>
+              <line x1="55" y1="90" x2="125" y2="90" stroke="#1565c0" stroke-width="2"/>
+              <text x="90" y="125" text-anchor="middle" fill="#1565c0" font-size="32" font-weight="bold" font-family="serif">SFC</text>
+              <text x="90" y="165" text-anchor="middle" fill="#333" font-size="11" font-family="sans-serif">10,000 MSL</text>
+              <text x="90" y="180" text-anchor="middle" fill="#333" font-size="11" font-family="sans-serif">to Surface</text>
+              <text x="250" y="80" text-anchor="middle" fill="#1565c0" font-size="32" font-weight="bold" font-family="serif">80</text>
+              <line x1="215" y1="90" x2="285" y2="90" stroke="#1565c0" stroke-width="2"/>
+              <text x="250" y="125" text-anchor="middle" fill="#1565c0" font-size="32" font-weight="bold" font-family="serif">30</text>
+              <text x="250" y="165" text-anchor="middle" fill="#333" font-size="11" font-family="sans-serif">8,000 MSL</text>
+              <text x="250" y="180" text-anchor="middle" fill="#333" font-size="11" font-family="sans-serif">to 3,000 MSL</text>
+              <text x="410" y="80" text-anchor="middle" fill="#c2185b" font-size="32" font-weight="bold" font-family="serif">41</text>
+              <line x1="375" y1="90" x2="445" y2="90" stroke="#c2185b" stroke-width="2"/>
+              <text x="410" y="125" text-anchor="middle" fill="#c2185b" font-size="32" font-weight="bold" font-family="serif">13</text>
+              <text x="410" y="165" text-anchor="middle" fill="#333" font-size="11" font-family="sans-serif">4,100 MSL</text>
+              <text x="410" y="180" text-anchor="middle" fill="#333" font-size="11" font-family="sans-serif">to 1,300 MSL</text>
+            </svg>
+            <div class="svg-caption">Top number = ceiling, bottom = floor. Both in hundreds of feet MSL. SFC = surface.</div>
+          </div>
+          <p><strong>Rules:</strong></p>
           <ul>
             <li>Top number = ceiling in hundreds of feet MSL</li>
             <li>Bottom number = floor in hundreds of feet MSL</li>
             <li>'SFC' means surface</li>
-          </ul>
-          <p><strong>Examples:</strong></p>
-          <ul>
-            <li><strong>100/SFC</strong> = 10,000 MSL to surface</li>
-            <li><strong>80/25</strong> = 8,000 MSL to 2,500 MSL</li>
-            <li><strong>41/13</strong> = 4,100 MSL to 1,300 MSL</li>
           </ul>
           <p><strong>Common test question:</strong> If Class B is '30/SFC' at your location and terrain elevation is 500 ft, the maximum AGL to stay under Class B is 3,000 - 500 = 2,500 ft AGL. Then Part 107 still caps you at 400 AGL.</p>
           <p><strong>MSL to AGL conversion:</strong> AGL = MSL altitude - ground elevation. Sectional shows ground elevation via terrain contour colors and airport data blocks.</p>`
@@ -3037,6 +3271,29 @@ const DATA = {
       {
         name: "Airport Symbols",
         content: `<h3>Reading Airport Info</h3>
+          <div class="svg-block">
+            <svg viewBox="0 0 500 260" xmlns="http://www.w3.org/2000/svg">
+              <text x="250" y="20" text-anchor="middle" fill="#333" font-size="14" font-weight="bold" font-family="sans-serif">Airport Symbols</text>
+              <circle cx="90" cy="90" r="26" fill="none" stroke="#1565c0" stroke-width="3"/>
+              <text x="90" y="145" text-anchor="middle" fill="#333" font-size="12" font-weight="bold" font-family="sans-serif">Blue Circle</text>
+              <text x="90" y="162" text-anchor="middle" fill="#666" font-size="11" font-family="sans-serif">Has Control Tower</text>
+              <circle cx="200" cy="90" r="26" fill="none" stroke="#c2185b" stroke-width="3"/>
+              <text x="200" y="145" text-anchor="middle" fill="#333" font-size="12" font-weight="bold" font-family="sans-serif">Magenta Circle</text>
+              <text x="200" y="162" text-anchor="middle" fill="#666" font-size="11" font-family="sans-serif">Non-Towered</text>
+              <circle cx="310" cy="90" r="26" fill="none" stroke="#1565c0" stroke-width="3"/>
+              <polygon points="310,58 314,68 324,68 316,74 319,84 310,78 301,84 304,74 296,68 306,68" fill="#1565c0"/>
+              <text x="310" y="145" text-anchor="middle" fill="#333" font-size="12" font-weight="bold" font-family="sans-serif">With Star</text>
+              <text x="310" y="162" text-anchor="middle" fill="#666" font-size="11" font-family="sans-serif">Rotating Beacon</text>
+              <circle cx="420" cy="90" r="26" fill="none" stroke="#1565c0" stroke-width="3"/>
+              <text x="420" y="97" text-anchor="middle" fill="#1565c0" font-size="18" font-weight="bold" font-family="sans-serif">R</text>
+              <text x="420" y="145" text-anchor="middle" fill="#333" font-size="12" font-weight="bold" font-family="sans-serif">R Inside</text>
+              <text x="420" y="162" text-anchor="middle" fill="#666" font-size="11" font-family="sans-serif">Right Traffic Pattern</text>
+              <text x="250" y="205" text-anchor="middle" fill="#333" font-size="12" font-weight="bold" font-family="sans-serif">KABC</text>
+              <text x="250" y="222" text-anchor="middle" fill="#666" font-size="11" font-family="sans-serif">CT - 118.3 *L 45</text>
+              <text x="250" y="238" text-anchor="middle" fill="#666" font-size="11" font-family="sans-serif">Elev 1,235</text>
+            </svg>
+            <div class="svg-caption">Airport symbol colors and modifiers.</div>
+          </div>
           <p><strong>Color:</strong></p>
           <ul>
             <li><strong>Blue symbol</strong> = has an operational control tower</li>
@@ -3050,21 +3307,12 @@ const DATA = {
             <li><strong>Runway shape shown</strong> = for airports with runways over 8,069 ft or paved</li>
             <li><strong>Small circle</strong> = smaller airport</li>
           </ul>
-          <p><strong>Airport data block format:</strong></p>
-          <p style="font-family: monospace; background: #232c36; padding: 8px; border-radius: 6px;">
-            KABC<br>
-            CT - 118.3 *L 45<br>
-            123.0 25<br>
-            Elev 1,235
-          </p>
-          <p><strong>Decoded:</strong></p>
+          <p><strong>Airport data block breakdown:</strong></p>
           <ul>
             <li><strong>KABC</strong> = ICAO identifier</li>
-            <li><strong>CT - 118.3</strong> = Control Tower frequency 118.3 MHz (if towered)</li>
+            <li><strong>CT - 118.3</strong> = Control Tower frequency 118.3 MHz</li>
             <li><strong>*L</strong> = Lighting available on request or during specific hours</li>
             <li><strong>45</strong> = Runway length in hundreds of feet (4,500 ft)</li>
-            <li><strong>123.0</strong> = CTAF/other frequency</li>
-            <li><strong>25</strong> = Additional runway length</li>
             <li><strong>Elev 1,235</strong> = Field elevation in feet MSL</li>
           </ul>`
       },
@@ -3615,6 +3863,11 @@ const DATA = {
       {
         name: "About This Section",
         content: `<h3>Official FAA Sample Questions</h3>
+          <div class="chart-callout">
+            <strong>You need the FAA Chart Booklet to answer many of these:</strong> Many questions below reference "Figure X" from FAA-CT-8080-2H. This is the same booklet you'll get at the test center. Download it now and open it in another tab or on your desktop while you drill.
+            <br><br>
+            <a class="chart-btn" href="https://www.faa.gov/training_testing/testing/supplements/media/sport_rec_private_akts.pdf" target="_blank">Open FAA Chart Booklet (PDF)</a>
+          </div>
           <p>These 46 questions are published by the FAA as sample questions for the Unmanned Aircraft General (UAG) knowledge test. They are the closest thing to actual test questions you can practice with.</p>
           <p><strong>Source:</strong> FAA UAG Sample Questions PDF, available free at faa.gov/sites/faa.gov/files/training_testing/testing/test_questions/uag_questions.pdf</p>
           <p><strong>Note the format:</strong> Real FAA questions have 3 answer choices (A, B, C), unlike many prep books that use 4. The choices are carefully worded to differentiate correct understanding from partial understanding.</p>
@@ -4214,6 +4467,41 @@ function renderExamReview(el) {
   back.onclick = function() { examState.reviewMode = false; renderContent(); };
   backDiv.appendChild(back);
   el.appendChild(backDiv);
+}
+
+// ============================================================
+// CHART BOOKLET
+// ============================================================
+
+function openBooklet() {
+  const overlay = document.getElementById("bookletOverlay");
+  const frame = document.getElementById("bookletFrame");
+  const fallback = document.getElementById("bookletFallback");
+  overlay.classList.add("open");
+  fallback.style.display = "none";
+  frame.style.display = "";
+  // Try local file first, fall back to FAA URL if it fails
+  if (!frame.src || !frame.src.endsWith("faa-supplement.pdf#toolbar=1")) {
+    frame.src = "faa-supplement.pdf#toolbar=1";
+    // Check after a short delay if the file loaded
+    setTimeout(function() {
+      try {
+        if (frame.contentDocument && frame.contentDocument.title && frame.contentDocument.title.indexOf("404") >= 0) {
+          frame.style.display = "none";
+          fallback.style.display = "block";
+        }
+      } catch(e) {
+        // Cross-origin block on the check itself means the PDF loaded fine
+      }
+    }, 1500);
+  }
+  document.body.style.overflow = "hidden";
+}
+
+function closeBooklet() {
+  const overlay = document.getElementById("bookletOverlay");
+  overlay.classList.remove("open");
+  document.body.style.overflow = "";
 }
 
 function renderAll() {
