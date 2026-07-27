@@ -337,6 +337,63 @@
     text-decoration: none;
     font-weight: 600;
   }
+  .fig-container {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .fig-img {
+    max-width: 100%;
+    max-height: 260px;
+    width: auto;
+    height: auto;
+    border-radius: 6px;
+    border: 2px solid #2a3540;
+    cursor: zoom-in;
+    display: block;
+    margin: 0 auto;
+    background: #fff;
+  }
+  .fig-caption {
+    color: #888;
+    font-size: 0.75rem;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  .fig-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    padding: 20px;
+    padding-top: calc(20px + env(safe-area-inset-top));
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+  }
+  .fig-modal.open { display: flex; }
+  .fig-modal img {
+    max-width: 100%;
+    max-height: 100%;
+    cursor: zoom-out;
+    background: #fff;
+    border-radius: 4px;
+  }
+  .fig-modal-close {
+    position: absolute;
+    top: calc(20px + env(safe-area-inset-top));
+    right: 20px;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 1.3rem;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
   .stats {
     background: #1a2027;
     padding: 12px;
@@ -389,6 +446,11 @@
     <p style="font-size:0.9rem;color:#aaa;margin-top:8px;">Download it from the FAA and add faa-supplement.pdf to your app folder.</p>
     <a href="https://www.faa.gov/training_testing/testing/supplements/media/sport_rec_private_akts.pdf" target="_blank">Open FAA Website</a>
   </div>
+</div>
+
+<div class="fig-modal" id="figModal" onclick="hideFigure(event)">
+  <button class="fig-modal-close" onclick="hideFigure(event)">✕</button>
+  <img id="figModalImg" src="" alt="Chart figure">
 </div>
 
 <script>
@@ -3446,6 +3508,7 @@ const DATA = {
           "122.8 MHz."
         ],
         correct: 2,
+        fig: "fig-22.jpg",
         exp: "Coeur d'Alene is non-towered. Its CTAF is 122.8 MHz. To answer these figure questions on the real test, use the FAA-CT-8080-2H supplement. ACS: UA.V.B.K6a"
       },
       {
@@ -3466,6 +3529,7 @@ const DATA = {
           "38 pounds."
         ],
         correct: 2,
+        fig: "fig-2.jpg",
         exp: "Load factor at 30° bank is about 1.15. 33 × 1.15 ≈ 38 lbs. Load factor increases with bank angle: 45° = 1.41, 60° = 2.0. ACS: UA.IV.A.K1a"
       },
       {
@@ -3476,6 +3540,7 @@ const DATA = {
           "1,700 feet MSL."
         ],
         correct: 1,
+        fig: "fig-23.jpg",
         exp: "Class C altitude numbers are in hundreds of feet MSL. Savannah's outer shelf floor is depicted as 13 = 1,300 MSL. Class B/C use MSL, not AGL. ACS: UA.II.A.K1b"
       },
       {
@@ -3486,6 +3551,7 @@ const DATA = {
           "Unmarked balloon on a cable up to 3,008 feet MSL."
         ],
         correct: 2,
+        fig: "fig-20.jpg",
         exp: "Balloon-on-cable altitudes on sectionals are given in MSL (they mark a fixed point). Verify this against the actual figure in FAA-CT-8080-2H. ACS: UA.V.B.K6a"
       },
       {
@@ -3496,6 +3562,7 @@ const DATA = {
           "Refer to the Military Operations Directory."
         ],
         correct: 0,
+        fig: "fig-21.jpg",
         exp: "MOA operating times are shown on the sectional chart legend or the Chart Supplement U.S. There's no 'Small UAS database' or 'Military Operations Directory'. ACS: UA.II.A.K2"
       },
       {
@@ -3526,6 +3593,7 @@ const DATA = {
           "Authorization from the National Park Service."
         ],
         correct: 1,
+        fig: "fig-26.jpg",
         exp: "The tower is near Jamestown Regional, which is in controlled airspace. ATC authorization is required to operate in controlled airspace under Part 107. ACS: UA.V.B.K6a"
       },
       {
@@ -3536,6 +3604,7 @@ const DATA = {
           "By obtaining a briefing via an online source such as: 1800WXBrief.com."
         ],
         correct: 2,
+        fig: "fig-20.jpg",
         exp: "NOTAMs are obtained via preflight briefings from Flight Service (1800wxbrief.com) or notams.faa.gov. B4UFLY shows airspace, not NOTAMs. ACS: UA.II.B.K5"
       },
       {
@@ -3576,6 +3645,7 @@ const DATA = {
           "The aircraft is West."
         ],
         correct: 0,
+        fig: "fig-26.jpg",
         exp: "Runway 13 lands to the southeast (130°). Left downwind means left-hand pattern, aircraft flying opposite direction (300°+) with runway on the left. The aircraft is northeast/east of the runway. ACS: UA.V.A.K3"
       },
       {
@@ -3636,6 +3706,7 @@ const DATA = {
           "Garrison Airport."
         ],
         correct: 2,
+        fig: "fig-21.jpg",
         exp: "Coordinates 47°40'N 101°26'W place the airport in central North Dakota. Garrison Airport is at that location. Verify by measuring lat/long on the actual figure. ACS: UA.V.B.K6a"
       },
       {
@@ -3646,6 +3717,7 @@ const DATA = {
           "Sky 700 feet overcast, visibility 11, occasionally 2SM, with rain."
         ],
         correct: 0,
+        fig: "fig-12.jpg",
         exp: "Cloud heights in METARs are in hundreds of feet. OVC007 = 700 AGL overcast. 1 1/2SM visibility. Standard rain (RA), not heavy (+RA). ACS: UA.III.A.K2"
       },
       {
@@ -3656,6 +3728,7 @@ const DATA = {
           "040° true at 18 knots."
         ],
         correct: 0,
+        fig: "fig-12.jpg",
         exp: "METAR wind is always in degrees TRUE (not magnetic) and in knots. 18004KT decodes as 180° true at 4 knots. ATIS/tower reports use magnetic. ACS: UA.III.A.K2"
       },
       {
@@ -3696,6 +3769,7 @@ const DATA = {
           "Yes, the defined route provides traffic separation to manned aircraft."
         ],
         correct: 1,
+        fig: "fig-59.jpg",
         exp: "Four-digit VR/IR routes (like VR1667) indicate the route is entirely at or below 1,500 ft AGL. Military aircraft may transit at 250+ knots at any altitude in this range. ACS: UA.II.A.K2"
       },
       {
@@ -3706,6 +3780,7 @@ const DATA = {
           "The degrees of latitude east and west of the line that passes through Greenwich, England."
         ],
         correct: 1,
+        fig: "fig-26.jpg",
         exp: "Latitude lines (parallels) run east-west and measure position north-south of the equator. Longitude (meridians) measures position east-west of Greenwich. ACS: UA.V.B.K6a"
       },
       {
@@ -4095,7 +4170,7 @@ function renderQuestions(el, data) {
 
   const card = document.createElement("div");
   card.className = "card";
-  card.innerHTML = `<div class="question">${state.qIndex + 1}. ${q.q}</div>`;
+  card.innerHTML = figHtml(q) + `<div class="question">${state.qIndex + 1}. ${q.q}</div>`;
   const opts = document.createElement("div");
   opts.className = "options";
   q.opts.forEach((opt, i) => {
@@ -4304,7 +4379,7 @@ function renderExamQuestion(el) {
   const q = examState.questions[examState.currentIndex];
   const card = document.createElement("div");
   card.className = "card";
-  card.innerHTML = "<div class='question'>Q" + (examState.currentIndex + 1) + ". " + q.q + "</div>";
+  card.innerHTML = figHtml(q) + "<div class='question'>Q" + (examState.currentIndex + 1) + ". " + q.q + "</div>";
   const opts = document.createElement("div");
   opts.className = "options";
   q.opts.forEach(function(opt, i) {
@@ -4424,7 +4499,7 @@ function renderExamReview(el) {
 
   const card = document.createElement("div");
   card.className = "card";
-  card.innerHTML = "<div class='question'>Q" + (examState.currentIndex + 1) + ". " + q.q + "</div>";
+  card.innerHTML = figHtml(q) + "<div class='question'>Q" + (examState.currentIndex + 1) + ". " + q.q + "</div>";
   const opts = document.createElement("div");
   opts.className = "options";
   q.opts.forEach(function(opt, i) {
@@ -4502,6 +4577,29 @@ function closeBooklet() {
   const overlay = document.getElementById("bookletOverlay");
   overlay.classList.remove("open");
   document.body.style.overflow = "";
+}
+
+function showFigure(src) {
+  const modal = document.getElementById("figModal");
+  const img = document.getElementById("figModalImg");
+  img.src = src;
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function hideFigure(event) {
+  if (event) event.stopPropagation();
+  const modal = document.getElementById("figModal");
+  modal.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function figHtml(q) {
+  if (!q || !q.fig) return "";
+  return '<div class="fig-container">' +
+    '<img class="fig-img" src="figures/' + q.fig + '" alt="Chart figure" onclick="showFigure(\'figures/' + q.fig + '\')">' +
+    '<div class="fig-caption">Tap to enlarge</div>' +
+    '</div>';
 }
 
 function renderAll() {
